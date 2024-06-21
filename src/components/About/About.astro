@@ -1,0 +1,27 @@
+---
+import SocialIcons from '../SocialIcons.astro';
+import Title from '../atoms/Title.astro';
+import "./about.css"
+
+
+---
+
+<section id="about" class="about">
+	<div class="about__container">
+		<img
+			class="about__img"
+			src=/img/foto.jpeg
+			alt="Foto de perfil de Franklin Amador "
+		/>
+		
+
+		<div class="about__content">
+			<Title margin="1rem" contenido="Sobre mí" />
+			<p class="about__text">
+				Hola! Soy Franklin, soy un front-end developer, actualmente estudio ingeniería en sistemas. Me gusta escuchar música, aprender cosas nuevas, y relajarme en la naturaleza. Mis hobbies son el origami, resolver puzzles, los cubos de rubik se me dan bien, los videojuegos  y todo lo que involucre la tecnología.
+			</p>
+			<SocialIcons width="25" height="25"/>
+		</div>
+	</div>
+
+</section>
