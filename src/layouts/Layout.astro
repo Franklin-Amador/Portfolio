@@ -1,21 +1,41 @@
 ---
 import "../styles/global.css"
+import ThemeToggle from '../components/ThemeToggle/ThemeToggle';
+import Footer from '../components/Footer/Footer.astro';
 interface Props {
 	title: string;
+	description?: string;
+	image?: string;
 }
-const { title } = Astro.props;
-import Header from '../components/header/Header.astro';
-import { mainMenu } from '../components/data/menuData.js';
+const { title, description = "Portfolio personal de Franklin Amador - Full Stack Developer especializado en desarrollo web moderno con React, Astro y Tailwind CSS.", image = "/img/foto.jpeg" } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
+		
+		<!-- SEO Meta Tags -->
+		<meta name="author" content="Franklin Amador" />
+		<meta name="keywords" content="Franklin Amador, Full Stack Developer, Web Developer, React, Astro, Tailwind CSS, JavaScript, Portfolio" />
+		
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={image} />
+		
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={image} />
+		<meta name="twitter:creator" content="@LordFrank37" />
+		
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -26,8 +46,11 @@ import { mainMenu } from '../components/data/menuData.js';
 		<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 		<title>{title}</title>
 	</head>
-	<body class="flex flex-col">
-
-			<slot/>
+	<body class="flex flex-col min-h-[100dvh]">
+		<ThemeToggle className="theme-toggle--floating" client:load />
+		<div class="flex-1 w-full">
+			<slot />
+		</div>
+		<Footer />
 	</body>
 </html>

@@ -1,7 +1,11 @@
 ---
 const {width, height} = Astro.props;
 const socialLinks = [
-
+	{
+		title: 'GitHub',
+		icon: 'mdi:github',
+		href: 'https://github.com/Franklin-Amador',
+	},
 	{
 		title: 'Instagram',
 		icon: 'mdi:instagram',
@@ -9,7 +13,7 @@ const socialLinks = [
 
 	},
 	{
-		title: 'Tiwtter',
+		title: 'Twitter',
 		icon: 'ri:twitter-x-fill',
 		href: 'https://x.com/LordFrank37',
 
@@ -47,21 +51,26 @@ const socialLinks = [
     gap: 2rem;
 }
 .skill__icon{
-	color:#dcd8fc;
+	color: var(--primary-90);
 }
 
-	.LinkedIn:hover{
-		color: #0e76a8;
+	:global([data-theme="light"]) .skill__icon{
+	color: var(--primary-70);
+}
+
+	.GitHub:hover{
+		color: #ffffff;
 	}
 	.Instagram:hover{
 	color: #E1306C;
 	}
-	.Tiwtter:hover{
+	.Twitter:hover{
 	color: #0aa5f6;
 	}
-	.CV:hover{
-		color:#8e64ff;
-	}
+
+	:global([data-theme="light"]) .icons__container a:hover .GitHub{
+	color: #000000 !important;
+}
 
 
 

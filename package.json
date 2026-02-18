@@ -1,7 +1,7 @@
 {
-  "name": "primer-blog",
+  "name": "franklin-portfolio",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -18,27 +18,29 @@
     "react-dom": "18.2.0",
     "tailwindcss": "3.4.3"
   },
-  "description": "![Portada](image-1.png)",
+  "description": "Portfolio personal de Franklin Amador - Front-end Developer especializado en desarrollo web moderno",
   "main": "index.astro",
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SofiDevO/portfolio-astrosofidev-garrux.git"
+    "url": "git+https://github.com/Franklin-Amador/Portfolio.git"
   },
   "keywords": [
     "astro",
-    "sofidev",
+    "franklin-amador",
     "frontend",
     "portfolio",
     "javascript",
     "portafolio",
     "css",
-    "tailwind"
+    "tailwind",
+    "react",
+    "web-developer"
   ],
-  "author": "SofiDev / Garrux",
+  "author": "Franklin Amador <https://github.com/Franklin-Amador>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SofiDevO/portfolio-astrosofidev-garrux/issues"
+    "url": "https://github.com/Franklin-Amador/Portfolio/issues"
   },
-  "homepage": "https://github.com/SofiDevO/portfolio-astrosofidev-garrux#readme"
+  "homepage": "https://github.com/Franklin-Amador/Portfolio#readme"
 }

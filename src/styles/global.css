@@ -66,7 +66,73 @@
 		#58f9ff 0%,
 		#df44e7 100%
 	);
+	--text-gradient-light: radial-gradient(
+		circle farthest-corner at center center,
+		#6632cf 0%,
+		#ae285f 100%
+	);
+	--card-gradient-end: var(--primary-0);
+	--card-chip-bg: rgba(0, 0, 0, 0.55);
+	--card-chip-text: var(--primary-95);
 }
+
+/* Light Theme */
+[data-theme="light"] {
+	--primary-0: #ffffff;
+	--primary-10: #f4f4fe;
+	--primary-20: #edeafd;
+	--primary-30: #dcd8fc;
+	--primary-40: #c2b9f9;
+	--primary-50: #a491f4;
+	--primary-60: #8664ee;
+	--primary-70: #7644e3;
+	--primary-80: #6632cf;
+	--primary-90: #5529ae;
+	--primary-95: #442288;
+	--primary-99: #2b1560;
+	--primary-100: #190230;
+
+	--secondary-0: #ffffff;
+	--secondary-10: #fcf3f8;
+	--secondary-20: #fae9f3;
+	--secondary-30: #f7d3e7;
+	--secondary-40: #f1b0d3;
+	--secondary-50: #e77fb4;
+	--secondary-60: #dc5898;
+	--secondary-70: #c93978;
+	--secondary-80: #ae285f;
+	--secondary-90: #87224a;
+	--secondary-95: #782344;
+	--secondary-99: #490e25;
+	--secondary-100: #1c050e;
+
+	--surface: #e8e3f0;
+	--surface-variant: #2d2438;
+	--surface-dim: #998da9;
+	--surface-bridge: #3a2f4d;
+
+	--site-bg: var(--primary-0);
+	--hero-bg: linear-gradient(
+		-54deg,
+		var(--primary-0) -23%,
+		var(--primary-20),
+		var(--primary-0) 51%
+	);
+	--text-gradient: radial-gradient(
+		circle farthest-corner at center center,
+		#6632cf 0%,
+		#ae285f 100%
+	);
+	--text-gradient-light: radial-gradient(
+		circle farthest-corner at center center,
+		#6632cf 0%,
+		#ae285f 100%
+	);
+	--card-gradient-end: var(--surface);
+	--card-chip-bg: rgba(255, 255, 255, 0.75);
+	--card-chip-text: var(--primary-90);
+}
+
 *{
 	box-sizing: border-box;
 }
@@ -78,7 +144,7 @@ html {
 body {
 	width: 100%;
 	background: var(--site-bg) no-repeat;
-	background: var(--site-bg) no-repeat;
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 main {
 	align-self: center;
@@ -90,6 +156,14 @@ p{
 
 .color__gradiente {
 	background: var(--text-gradient);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	transition: background 0.3s ease;
+}
+
+[data-theme="light"] .color__gradiente {
+	background: var(--text-gradient-light);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;

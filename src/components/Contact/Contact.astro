@@ -1,0 +1,56 @@
+---
+import Title from '../atoms/Title.astro';
+import SocialIcons from '../SocialIcons.astro';
+import './contact.css';
+---
+
+<section id="contact" class="contact">
+	<div class="contact__container">
+		<Title margin="2rem" contenido="Contacto" />
+		<p class="contact__description">
+			¿Tienes un proyecto en mente? ¿Quieres colaborar? ¡Hablemos! Estoy disponible para nuevas oportunidades y proyectos interesantes.
+		</p>
+		
+		<div class="contact__content">
+			<div class="contact__info">
+				<div class="contact__item">
+					<iconify-icon icon="mdi:email" width="30" height="30"></iconify-icon>
+					<div>
+						<h3>Email</h3>
+						<a href="mailto:franklin.amador@example.com" class="contact__link">
+							Envíame un correo
+						</a>
+					</div>
+				</div>
+
+				<div class="contact__item">
+					<iconify-icon icon="mdi:github" width="30" height="30"></iconify-icon>
+					<div>
+						<h3>GitHub</h3>
+						<a href="https://github.com/Franklin-Amador" target="_blank" rel="noopener noreferrer" class="contact__link">
+							Franklin-Amador
+						</a>
+					</div>
+				</div>
+
+				<div class="contact__item">
+					<iconify-icon icon="mdi:linkedin" width="30" height="30"></iconify-icon>
+					<div>
+						<h3>LinkedIn</h3>
+						<a href="https://www.linkedin.com/in/franklin-amador" target="_blank" rel="noopener noreferrer" class="contact__link">
+							Conéctate conmigo
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="contact__social">
+				<h3>Sígueme en redes sociales</h3>
+				<SocialIcons width="35" height="35"/>
+				<p class="contact__availability">
+					💼 Disponible para trabajos freelance y oportunidades laborales
+				</p>
+			</div>
+		</div>
+	</div>
+</section>

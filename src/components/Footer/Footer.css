@@ -1,6 +1,6 @@
 footer {
     width: 100%;
-    background: rgb(19, 19, 19);
+    background: var(--surface);
     display: flex;
     justify-content: space-between;
     min-height: 20dvh;
@@ -8,6 +8,7 @@ footer {
     align-items: center;
     padding: 1rem 4rem;
     flex-wrap: wrap;
+    border-top: 1px solid var(--primary-30);
     h3{
         font-size: var(--text-title);
     }
@@ -27,4 +28,12 @@ footer {
     gap: 1rem;
     font-size: var(--text-large);
 
+}
+
+.footer__icon {
+	color: var(--primary-90);
+}
+
+[data-theme="light"] .footer__icon {
+	color: var(--primary-70);
 }

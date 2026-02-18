@@ -2,27 +2,82 @@
 import Title from './atoms/Title.astro';
 import { getPortafolioData} from "../components/data/portfolioData.js"
 import Card from './card-portfolio/CardPortfolio.astro';
+import ProjectCarousel from './ProjectCarousel/ProjectCarousel';
+
+// Separar proyectos destacados (primeros 3 del CV) del resto
+const featuredProjects = getPortafolioData.slice(0, 3);
+const otherProjects = getPortafolioData.slice(3);
 ---
 
 <section
 	id="portafolio"
-	class="flex flex-col w-full  justify-center items-center h-auto min-h-[100dvh]  "
+	class="flex flex-col w-full  justify-center items-center h-auto min-h-[100dvh] py-12"
 >
 	<div class="portfolio__container">
 		<Title contenido="Proyectos" />
-		<div class="portfolio__elements">
-			{getPortafolioData.map((props) => <Card {...props} />)}
-		</div>
+		
+		<!-- Carrusel de proyectos destacados -->
+		<ProjectCarousel projects={featuredProjects} client:load />
+		
+		<!-- Grid de otros proyectos -->
+		{otherProjects.length > 0 && (
+			<div class="other-projects-section">
+				<h3 class="other-projects-title">Otros Proyectos</h3>
+				<div class="portfolio__elements">
+					{otherProjects.map((props) => <Card {...props} />)}
+				</div>
+			</div>
+		)}
 	</div>
 </section>
 
 <style>
+	.portfolio__container {
+		width: 100%;
+		max-width: var(--max-width);
+		padding: 0 2rem;
+	}
+
+	.other-projects-section {
+		margin-top: 6rem;
+	}
+
+	.other-projects-title {
+		font-size: 2.2rem;
+		font-weight: 600;
+		text-align: center;
+		color: var(--primary-90);
+		margin-bottom: 3rem;
+		position: relative;
+	}
+
+	.other-projects-title::after {
+		content: '';
+		position: absolute;
+		bottom: -1rem;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 80px;
+		height: 3px;
+		background: var(--text-gradient);
+		border-radius: 2px;
+	}
+
 	.portfolio__elements {
 		max-width: var(--max-width);
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
-		gap: 4rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+		justify-items: center;
+		gap: 3rem;
+		width: 100%;
+	}
+
+	@media screen and (max-width: 768px) {
+		.portfolio__elements {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+			padding: 0 1rem;
+		}
 	}
 </style>
 
@@ -38,10 +93,16 @@ import Card from './card-portfolio/CardPortfolio.astro';
 		if (!$img || !$container) return;
 
 		const setBg = () => {
-			const [rbgString] = getIMGAverageColor($img, 0.7);
-			$container.style.background = rbgString;
+			const [rbgString] = getIMGAverageColor($img, 0.5);
+			// Aplicar un gradiente sutil basado en el color promedio de la imagen
+			$container.style.background = `linear-gradient(to bottom, ${rbgString}, var(--card-gradient-end))`;
 		};
-		setBg();
-		$img.onload = setBg;
+		
+		// Esperar a que la imagen se cargue
+		if ($img.complete) {
+			setBg();
+		} else {
+			$img.onload = setBg;
+		}
 	});
 </script>

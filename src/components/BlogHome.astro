@@ -10,24 +10,83 @@ const posts = (await getCollection('blog')).sort(
 
 ---
 
-<section id="hobbies" class="flex flex-col items-center w-full h-full md:max-w-full  justify-center flex-wrap px-4">
-
-  <Title contenido="Hobbies" margin="2rem"/>
-  <div class="flex self-center gap-[20px] justify-center min-w-[30rem]  md:max-w-full flex-wrap flex-col md:flex-row w-auto">
+<section id="hobbies" class="hobbies">
+  <div class="hobbies__header">
+    <Title contenido="Hobbies" margin="1.6rem" />
+    <p class="hobbies__subtitle">
+      Un vistazo a mis intereses y proyectos personales fuera del trabajo.
+    </p>
+  </div>
+  <div class="hobbies__grid">
     {
-      posts.slice(0, 3).map((post) => (
+      posts.slice(0, 5).map((post) => (
         <CardBlog
-        title={post.data.title}
+          title={post.data.title}
           content={post.data.description}
           img={post.data.heroImage}
-          >
-
-         <FormattedDate  slot="date" clase="text-white" date={post.data.pubDate}/>
-         </CardBlog>
+          href={`/blog/${post.slug}/`}
+        >
+          <FormattedDate
+            slot="date"
+            clase="text-white"
+            date={post.data.pubDate}
+          />
+        </CardBlog>
       ))
     }
   </div>
-  <div class="flex justify-center m-5 max-w-full px-2">
-    
+  <div class="hobbies__cta">
+    <Boton href="/blog" texto="Ver todos" />
   </div>
 </section>
+
+<style>
+  .hobbies {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 4rem auto 6rem;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  .hobbies__header {
+    text-align: center;
+    max-width: 72rem;
+  }
+
+  .hobbies__subtitle {
+    font-size: 1.6rem;
+    color: var(--primary-90);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .hobbies__grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    justify-items: center;
+  }
+
+  .hobbies__cta {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .hobbies {
+      padding: 0 1.5rem;
+      gap: 2.5rem;
+    }
+
+    .hobbies__grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

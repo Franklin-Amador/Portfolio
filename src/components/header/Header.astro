@@ -2,18 +2,37 @@
 import './header.css';
 const { origin } = Astro.props;
 import Logo from '../Logo.astro';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 ---
 
 <header class="header">
 	<div class="header__container">
 		<Logo name="Franklin Amador"/>
-		<nav class="links"   tabindex="0.1">
-			<button class="menu__btn" >Menú</button>
+		<nav class="links" data-menu tabindex="0">
+			<button class="menu__btn" type="button" data-menu-open aria-label="Abrir menu">
+				<iconify-icon class="menu__icon" icon="mdi:dots-grid" width="22" height="22" />
+			</button>
+			<button class="menu__backdrop" type="button" data-menu-close aria-label="Cerrar menu"></button>
 			<ul class="header__list">
+				<li class="sidebar__header">
+					<img
+						class="sidebar__avatar"
+						src="/img/foto.jpeg"
+						alt="Franklin Amador"
+						loading="lazy"
+					/>
+					<div class="sidebar__meta">
+						<span class="sidebar__name">Franklin Amador</span>
+						<span class="sidebar__role">Full Stack Developer</span>
+					</div>
+					<button class="sidebar__close" type="button" data-menu-close aria-label="Cerrar menu">
+						<iconify-icon icon="mdi:close" width="18" height="18" />
+					</button>
+				</li>
 				{
 					origin.map((data) => (
 						<li>
-							<a class="menu__link" href={data.link}>
+							<a class="menu__link" href={data.link} data-menu-close>
 								<span class="icon__container" >
 									<iconify-icon
 										class="icons"
@@ -27,7 +46,28 @@ import Logo from '../Logo.astro';
 						</li>
 					))
 				}
+				<li>
+					<ThemeToggle className="theme-toggle--menu" label="Apariencia" client:load />
+				</li>
 			</ul>
 		</nav>
 	</div>
 </header>
+
+<script is:inline>
+	const menu = document.querySelector('[data-menu]');
+	const openBtn = menu?.querySelector('[data-menu-open]');
+	const closeBtns = menu?.querySelectorAll('[data-menu-close]');
+
+	const setOpen = (isOpen) => {
+		if (!menu) return;
+		menu.setAttribute('data-open', isOpen ? 'true' : 'false');
+	};
+
+	openBtn?.addEventListener('click', () => setOpen(true));
+	closeBtns?.forEach((btn) => btn.addEventListener('click', () => setOpen(false)));
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') setOpen(false);
+	});
+</script>
