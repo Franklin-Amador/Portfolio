@@ -2,7 +2,9 @@
 import './card-portfolio.css';
 const {
 	title,
-	descripcion,
+	titleEN,
+	descriptionES,
+	descriptionEN,
 	imgSrc,
 	skills,
 	repoURL,
@@ -21,9 +23,9 @@ const {
 	/>
 
 	<div class="descripcion__container">
-		<h2 class="card__title">{title}</h2>
+		<h2 class="card__title" data-title-es={title} data-title-en={titleEN || title}>{title}</h2>
 		<div class="descripcion">
-			<p>{descripcion}</p>
+			<p data-description-es={descriptionES} data-description-en={descriptionEN}>{descriptionES}</p>
 
 			<div class="skills">
 				{
@@ -37,14 +39,14 @@ const {
 				<a href={repoURL} target="_blank" rel="noopener noreferrer">
 					<span>
 						<iconify-icon icon="mdi:github" width="18" height="18" />
-						GitHub
+						<span data-i18n="buttons.github">GitHub</span>
 					</span>
 				</a>
 				{demoURL && (
 					<a href={demoURL} target="_blank" rel="noopener noreferrer">
 						<span>
 							<iconify-icon icon="mdi:open-in-new" width="18" height="18" />
-							Demo
+							<span data-i18n="buttons.demo">Demo</span>
 						</span>
 					</a>
 				)}

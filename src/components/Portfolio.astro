@@ -14,7 +14,7 @@ const otherProjects = getPortafolioData.slice(3);
 	class="flex flex-col w-full  justify-center items-center h-auto min-h-[100dvh] py-12"
 >
 	<div class="portfolio__container">
-		<Title contenido="Proyectos" />
+		<Title contenido="Proyectos" i18nKey="portfolio.title" />
 		
 		<!-- Carrusel de proyectos destacados -->
 		<ProjectCarousel projects={featuredProjects} client:load />
@@ -22,7 +22,7 @@ const otherProjects = getPortafolioData.slice(3);
 		<!-- Grid de otros proyectos -->
 		{otherProjects.length > 0 && (
 			<div class="other-projects-section">
-				<h3 class="other-projects-title">Otros Proyectos</h3>
+				<h3 class="other-projects-title" data-i18n="portfolio.otherProjects">Otros Proyectos</h3>
 				<div class="portfolio__elements">
 					{otherProjects.map((props) => <Card {...props} />)}
 				</div>

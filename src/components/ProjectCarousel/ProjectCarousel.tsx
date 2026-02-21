@@ -4,8 +4,10 @@ import './ProjectCarousel.css';
 interface Project {
 	imgSrc: string;
 	title: string;
+	titleEN?: string;
 	skills: string[];
-	descripcion: string;
+	descriptionES: string;
+	descriptionEN: string;
 	demoURL: string;
 	repoURL: string;
 }
@@ -26,6 +28,24 @@ const carouselImages = [
 export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+	const [language, setLanguage] = useState<'es' | 'en'>('es');
+
+	useEffect(() => {
+		// Get initial language
+		const initialLang = document.documentElement.getAttribute('data-language') as 'es' | 'en' || 'es';
+		setLanguage(initialLang);
+
+		// Listen for language changes
+		const handleLanguageChange = (e: CustomEvent) => {
+			setLanguage(e.detail.language);
+		};
+
+		document.addEventListener('languageChanged', handleLanguageChange as EventListener);
+
+		return () => {
+			document.removeEventListener('languageChanged', handleLanguageChange as EventListener);
+		};
+	}, []);
 
 	useEffect(() => {
 		if (!isAutoPlaying) return;
@@ -52,17 +72,27 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 		setIsAutoPlaying(false);
 	};
 
+	const getButtonLabel = (label: string) => {
+		const translations: Record<string, Record<'es' | 'en', string>> = {
+			'Repositorio': { es: 'Repositorio', en: 'Repository' },
+			'Ver Demo': { es: 'Ver Demo', en: 'View Demo' },
+			'Proyecto anterior': { es: 'Proyecto anterior', en: 'Previous project' },
+			'Siguiente proyecto': { es: 'Siguiente proyecto', en: 'Next project' }
+		};
+		return translations[label]?.[language] || label;
+	};
+
 	return (
 		<div className="carousel-container">
 			<div className="carousel-featured-label">
-				<span>Proyectos Destacados</span>
+				<span data-i18n="portfolio.featured">Proyectos Destacados</span>
 			</div>
 
 			<div className="carousel-wrapper">
 				<button 
 					className="carousel-btn carousel-btn-prev" 
 					onClick={prevSlide}
-					aria-label="Proyecto anterior"
+					aria-label={getButtonLabel('Proyecto anterior')}
 				>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
 						<path d="M15 18l-6-6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -76,7 +106,9 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 						const isNext = offset === 1 || offset === -(projects.length - 1);
 						const isPrev = offset === -1 || offset === projects.length - 1;
 
-						const imageSrc = carouselImages[index % carouselImages.length];
+						const imageSrc = project.imgSrc || carouselImages[index % carouselImages.length];
+						const description = language === 'es' ? project.descriptionES : project.descriptionEN;
+						const title = language === 'es' ? project.title : (project.titleEN || project.title);
 
 						return (
 							<div
@@ -93,8 +125,8 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 									<img src={imageSrc} alt={project.title} loading="lazy" />
 								</div>
 								<div className="carousel-card-content">
-									<h3 className="carousel-card-title">{project.title}</h3>
-									<p className="carousel-card-description">{project.descripcion}</p>
+								<h3 className="carousel-card-title">{title}</h3>
+									<p className="carousel-card-description">{description}</p>
 									<div className="carousel-card-skills">
 										{project.skills.map((skill, i) => (
 											<iconify-icon key={i} icon={skill} width="32" height="32" />
@@ -108,7 +140,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 											className="carousel-btn-link"
 										>
 											<iconify-icon icon="mdi:github" width="20" height="20" />
-											Repositorio
+											{getButtonLabel('Repositorio')}
 										</a>
 										{project.demoURL && (
 											<a 
@@ -118,7 +150,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 												className="carousel-btn-link carousel-btn-demo"
 											>
 												<iconify-icon icon="mdi:open-in-new" width="20" height="20" />
-												Ver Demo
+												{getButtonLabel('Ver Demo')}
 											</a>
 										)}
 									</div>
@@ -131,7 +163,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 				<button 
 					className="carousel-btn carousel-btn-next" 
 					onClick={nextSlide}
-					aria-label="Siguiente proyecto"
+					aria-label={getButtonLabel('Siguiente proyecto')}
 				>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
 						<path d="M9 18l6-6-6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -145,10 +177,11 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 						key={index}
 						className={`carousel-dot ${index === currentIndex ? 'active' : ''}`}
 						onClick={() => goToSlide(index)}
-						aria-label={`Ir al proyecto ${index + 1}`}
+						aria-label={`${language === 'es' ? 'Ir al proyecto' : 'Go to project'} ${index + 1}`}
 					/>
 				))}
 			</div>
 		</div>
 	);
 }
+							

@@ -1,8 +1,6 @@
 ---
 import Title from "../components/atoms/Title.astro";
 import { getCollection } from 'astro:content';
-import Boton from "./atoms/Boton.astro";
-import FormattedDate from "./FormattedDate.astro";
 import CardBlog from "./CardBlog.astro";
 const posts = (await getCollection('blog')).sort(
 (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -12,8 +10,8 @@ const posts = (await getCollection('blog')).sort(
 
 <section id="hobbies" class="hobbies">
   <div class="hobbies__header">
-    <Title contenido="Hobbies" margin="1.6rem" />
-    <p class="hobbies__subtitle">
+    <Title contenido="Hobbies" margin="1.6rem" i18nKey="blog.title" />
+    <p class="hobbies__subtitle" data-i18n="blog.description">
       Un vistazo a mis intereses y proyectos personales fuera del trabajo.
     </p>
   </div>
@@ -22,21 +20,15 @@ const posts = (await getCollection('blog')).sort(
       posts.slice(0, 5).map((post) => (
         <CardBlog
           title={post.data.title}
+          titleEN={post.data.titleEN}
           content={post.data.description}
+          contentES={post.data.description}
+          contentEN={post.data.descriptionEN}
           img={post.data.heroImage}
-          href={`/blog/${post.slug}/`}
         >
-          <FormattedDate
-            slot="date"
-            clase="text-white"
-            date={post.data.pubDate}
-          />
         </CardBlog>
       ))
     }
-  </div>
-  <div class="hobbies__cta">
-    <Boton href="/blog" texto="Ver todos" />
   </div>
 </section>
 
@@ -45,11 +37,18 @@ const posts = (await getCollection('blog')).sort(
     width: 100%;
     max-width: var(--max-width);
     margin: 4rem auto 6rem;
-    padding: 0 2rem;
+      padding: 3rem 2.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 3rem;
+      border-radius: 32px;
+    background:
+      radial-gradient(circle at top right, color-mix(in srgb, var(--primary-60) 30%, transparent), transparent 45%),
+      radial-gradient(circle at bottom left, color-mix(in srgb, var(--secondary-60) 22%, transparent), transparent 40%),
+      linear-gradient(140deg, var(--primary-20), var(--primary-0));
+    border: 1px solid color-mix(in srgb, var(--primary-60) 40%, transparent);
+    box-shadow: 0 30px 70px color-mix(in srgb, var(--primary-100) 18%, transparent);
   }
 
   .hobbies__header {
@@ -67,8 +66,8 @@ const posts = (await getCollection('blog')).sort(
   .hobbies__grid {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.6rem;
     justify-items: center;
   }
 
@@ -80,13 +79,13 @@ const posts = (await getCollection('blog')).sort(
 
   @media screen and (max-width: 768px) {
     .hobbies {
-      padding: 0 1.5rem;
+        padding: 2.6rem 1.6rem;
       gap: 2.5rem;
     }
 
     .hobbies__grid {
       grid-template-columns: 1fr;
-      gap: 2rem;
+        gap: 2.2rem;
     }
   }
 </style>

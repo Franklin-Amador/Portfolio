@@ -1,9 +1,9 @@
 ---
 import '../hero/hero.css';
-const { href, texto } = Astro.props;
+const { href, texto, bottonI18n } = Astro.props;
 ---
 
-<a class="primary button" href={href}>{texto}</a>
+<a class="primary button" href={href} data-i18n={bottonI18n}>{texto}</a>
 
 <style>
 	.button {

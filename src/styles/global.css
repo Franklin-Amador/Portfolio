@@ -140,11 +140,214 @@ html {
 	font-family: var(--font-montserrat) !important;
 	font-size: 62.5%;
 	scroll-behavior: smooth;
+	overflow-x: clip;
 }
+
 body {
 	width: 100%;
 	background: var(--site-bg) no-repeat;
-	transition: background-color 0.3s ease, color 0.3s ease;
+	transition: background-color 0.4s ease, color 0.4s ease, background 0.4s ease, filter 0.4s ease;
+	position: relative;
+}
+
+body.theme-transitioning {
+	animation: theme-change 0.6s ease-in-out;
+}
+
+@keyframes theme-change {
+	0% {
+		filter: brightness(1);
+	}
+	50% {
+		filter: brightness(0.95);
+	}
+	100% {
+		filter: brightness(1);
+	}
+}
+
+/* Grid solo en site-shell, no en footer */
+.site-shell::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background-image:
+		repeating-linear-gradient(
+			0deg,
+			transparent,
+			transparent 31px,
+			color-mix(in srgb, var(--primary-60) 25%, transparent) 31px,
+			color-mix(in srgb, var(--primary-60) 25%, transparent) 32px
+		),
+		repeating-linear-gradient(
+			90deg,
+			transparent,
+			transparent 31px,
+			color-mix(in srgb, var(--primary-60) 22%, transparent) 31px,
+			color-mix(in srgb, var(--primary-60) 22%, transparent) 32px
+		);
+	opacity: 0.25;
+	pointer-events: none;
+	z-index: 0;
+	mix-blend-mode: overlay;
+}
+
+body::after {
+	content: '';
+	position: fixed;
+	inset: -100% 0 0 0;
+	background-image: repeating-linear-gradient(
+		to bottom,
+		transparent 0,
+		transparent 6px,
+		color-mix(in srgb, var(--primary-100) 12%, transparent) 7px
+	);
+	opacity: 0.2;
+	pointer-events: none;
+	mix-blend-mode: soft-light;
+	animation: scanline 9s linear infinite;
+	z-index: 1;
+}
+
+.site-shell {
+	position: relative;
+	z-index: 2;
+}
+
+.site-shell__content {
+	position: relative;
+	z-index: 10;
+}
+
+.site-wave {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 18rem;
+	height: 140px;
+	opacity: 0.9;
+	filter: blur(0.3px) drop-shadow(0 4px 12px color-mix(in srgb, var(--primary-60) 25%, transparent));
+	pointer-events: none;
+	z-index: 1;
+	animation: wave-float 15s ease-in-out infinite;
+}
+
+.site-wave svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+/* Floating data nodes */
+.data-nodes {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: -1;
+}
+
+.data-node {
+	position: absolute;
+	width: 6px;
+	height: 6px;
+	background: radial-gradient(
+		circle,
+		var(--primary-60),
+		color-mix(in srgb, var(--secondary-60) 60%, transparent)
+	);
+	border-radius: 50%;
+	box-shadow:
+		0 0 16px color-mix(in srgb, var(--primary-60) 80%, transparent),
+		0 0 32px color-mix(in srgb, var(--primary-60) 50%, transparent),
+		0 0 48px color-mix(in srgb, var(--secondary-60) 30%, transparent);
+	animation: float-node 8s ease-in-out infinite;
+	opacity: 0.9;
+}
+
+.data-node::before {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	background: var(--primary-60);
+	animation: pulse-node 3s ease-in-out infinite;
+}
+
+.data-node:nth-child(2n) {
+	width: 8px;
+	height: 8px;
+	animation-duration: 10s;
+}
+
+.data-node:nth-child(3n) {
+	width: 5px;
+	height: 5px;
+	animation-duration: 12s;
+	animation-direction: reverse;
+}
+
+.data-node:nth-child(4n) {
+	box-shadow:
+		0 0 20px color-mix(in srgb, var(--secondary-60) 80%, transparent),
+		0 0 40px color-mix(in srgb, var(--secondary-60) 50%, transparent);
+}
+
+@keyframes wave-float {
+	0%, 100% {
+		transform: translateY(0) scale(1);
+	}
+	50% {
+		transform: translateY(-8px) scale(1.02);
+	}
+}
+
+@keyframes float-node {
+	0%, 100% {
+		transform: translateY(0) scale(1);
+		opacity: 0.9;
+	}
+	25% {
+		transform: translateY(-15px) translateX(10px) scale(1.2);
+		opacity: 1;
+	}
+	50% {
+		transform: translateY(-25px) scale(1.4);
+		opacity: 0.95;
+	}
+	75% {
+		transform: translateY(-15px) translateX(-10px) scale(1.2);
+		opacity: 1;
+	}
+}
+
+@keyframes pulse-node {
+	0%, 100% {
+		transform: translate(-50%, -50%) scale(1);
+		opacity: 0.8;
+	}
+	50% {
+		transform: translate(-50%, -50%) scale(2.5);
+		opacity: 0;
+	}
+}
+
+@keyframes scanline {
+	0% {
+		transform: translateY(0);
+	}
+	100% {
+		transform: translateY(200px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body::after {
+		animation: none;
+	}
 }
 main {
 	align-self: center;

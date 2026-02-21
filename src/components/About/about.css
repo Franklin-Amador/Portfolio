@@ -36,8 +36,14 @@
 }
 
 .about__text {
-	font-size: 2.1rem;
+	font-size: 1.6rem;
 	max-width: 70.19rem;
+	background: color-mix(in srgb, var(--primary-0) 95%, transparent);
+	padding: 2rem;
+	border-radius: 16px;
+	backdrop-filter: blur(10px);
+	box-shadow: inset 0 0 30px color-mix(in srgb, var(--primary-100) 5%, transparent);
+	line-height: 1.6;
 }
 
 @media screen and (max-width: 768px) {

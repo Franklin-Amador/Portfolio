@@ -7,21 +7,21 @@ import Boton from '../atoms/Boton.astro';
 	<div class="hero__container">
 		<div class="text__content">
 			<h1 class="hero__title color__gradiente">Franklin Amador</h1>
-			<p class="hero__text">
-				Full Stack Developer especializado en crear experiencias web modernas y atractivas.
+			<p class="hero__text" data-i18n="hero.subtitle1">
+				Full Stack Developer especializado en Data Engineering, Machine Learning y DevOps.
 			</p>
-			<p class="hero__subtitle">
-				Transformo ideas en aplicaciones web funcionales y elegantes utilizando las últimas tecnologías.
+			<p class="hero__subtitle" data-i18n="hero.subtitle2">
+				Construyo pipelines de datos robustos, modelos ML en producción y arquitecturas cloud escalables.
 			</p>
 			<div class="hero__buttons">
-				<Boton href="#portafolio" texto="Ver Proyectos" />
-				<Boton href="#contact" texto="Contactar" />
+				<Boton href="#portafolio" texto="Ver Proyectos" bottonI18n="hero.buttonProjects" />
+				<Boton href="#contact" texto="Contactar" bottonI18n="hero.buttonContact" />
 			</div>
 		</div>
 		<img 
 			class="hero__img" 
 			src="/img/foto.jpeg" 
-			alt="Franklin Amador - Full Stack Developer"
+			alt="Franklin Amador - Full Stack & Data Engineer"
 			loading="eager"
 		/>
 	</div>

@@ -1,6 +1,8 @@
 ---
 title: "Puzzles y Logica"
-description: "Retos de logica y puzzles que entrenan el pensamiento." 
+titleEN: "Puzzles and Logic"
+description: "Retos de logica y puzzles que entrenan el pensamiento."
+descriptionEN: "Logic challenges and puzzles that train thinking."
 pubDate: 'Dec 12 24'
 heroImage: "../img/Cubo.jpeg"
 ---

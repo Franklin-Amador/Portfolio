@@ -20,7 +20,10 @@ const posts = (await getCollection('blog')).sort(
 						<li>
 							<CardBlog
 								title={post.data.title}
+								titleEN={post.data.titleEN}
 								content={post.data.description}
+								contentES={post.data.description}
+								contentEN={post.data.descriptionEN}
 								img={post.data.heroImage}
 								href={`/blog/${post.slug}/`}
 							>

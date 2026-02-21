@@ -1,13 +1,14 @@
 ---
 import "../styles/global.css"
-import ThemeToggle from '../components/ThemeToggle/ThemeToggle';
+import ThemeToggle from '../components/ThemeToggle/ThemeToggle.astro';
+import LanguageToggle from '../components/LanguageToggle/LanguageToggle.astro';
 import Footer from '../components/Footer/Footer.astro';
 interface Props {
 	title: string;
 	description?: string;
 	image?: string;
 }
-const { title, description = "Portfolio personal de Franklin Amador - Full Stack Developer especializado en desarrollo web moderno con React, Astro y Tailwind CSS.", image = "/img/foto.jpeg" } = Astro.props;
+const { title, description = "Portfolio de Franklin Amador - Full Stack Developer especializado en Data Engineering, Machine Learning y DevOps. Construyo pipelines de datos, modelos ML y arquitecturas cloud escalables.", image = "/img/foto.jpeg" } = Astro.props;
 ---
 
 <!doctype html>
@@ -21,7 +22,7 @@ const { title, description = "Portfolio personal de Franklin Amador - Full Stack
 		
 		<!-- SEO Meta Tags -->
 		<meta name="author" content="Franklin Amador" />
-		<meta name="keywords" content="Franklin Amador, Full Stack Developer, Web Developer, React, Astro, Tailwind CSS, JavaScript, Portfolio" />
+		<meta name="keywords" content="Franklin Amador, Full Stack Developer, Data Engineering, Machine Learning, DevOps, Data Science, MLOps, Python, FastAPI, Docker, Azure, Prometheus, Grafana" />
 		
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
@@ -44,13 +45,223 @@ const { title, description = "Portfolio personal de Franklin Amador - Full Stack
 			rel="stylesheet"
 		/>
 		<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+		<script is:inline>
+			// Apply theme before rendering to prevent flash
+			(function() {
+				const savedTheme = localStorage.getItem('theme');
+				if (savedTheme) {
+					document.documentElement.setAttribute('data-theme', savedTheme);
+				} else {
+					// Use system preference if no saved theme
+					const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+					document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+				}
+			})();
+
+			// Apply language before rendering to prevent flash
+			(function() {
+				const getDeviceLanguage = () => {
+					const lang = navigator.language || navigator.userLanguage;
+					return lang.startsWith('es') ? 'es' : 'en';
+				};
+				
+				const savedLang = localStorage.getItem('language');
+				const lang = savedLang || getDeviceLanguage();
+				document.documentElement.setAttribute('data-language', lang);
+				
+				if (!savedLang) {
+					localStorage.setItem('language', lang);
+				}
+			})();
+		</script>
 		<title>{title}</title>
 	</head>
 	<body class="flex flex-col min-h-[100dvh]">
-		<ThemeToggle className="theme-toggle--floating" client:load />
-		<div class="flex-1 w-full">
-			<slot />
+		<slot name="header" />
+		<ThemeToggle className="theme-toggle--floating" />
+		<LanguageToggle className="lang-toggle--floating" />
+		<div class="flex-1 w-full site-shell">
+			<!-- Decorative floating nodes -->
+			<div class="data-nodes" aria-hidden="true">
+				<span class="data-node" style="left: 12%; top: 15%; animation-delay: 0s;"></span>
+				<span class="data-node" style="left: 78%; top: 25%; animation-delay: 1.2s;"></span>
+				<span class="data-node" style="left: 35%; top: 40%; animation-delay: 2.4s;"></span>
+				<span class="data-node" style="left: 88%; top: 55%; animation-delay: 3.6s;"></span>
+				<span class="data-node" style="left: 58%; top: 65%; animation-delay: 0.8s;"></span>
+				<span class="data-node" style="left: 20%; top: 75%; animation-delay: 4.8s;"></span>
+				<span class="data-node" style="left: 92%; top: 18%; animation-delay: 2s;"></span>
+				<span class="data-node" style="left: 45%; top: 88%; animation-delay: 3.2s;"></span>
+				<span class="data-node" style="left: 8%; top: 50%; animation-delay: 1.6s;"></span>
+				<span class="data-node" style="left: 65%; top: 32%; animation-delay: 4s;"></span>
+			</div>
+			<div class="site-wave" aria-hidden="true">
+				<svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+					<path
+						d="M0,64 C180,110 360,22 540,64 C720,106 900,26 1080,64 C1260,102 1380,82 1440,56 L1440,120 L0,120 Z"
+						fill="var(--primary-20)"
+						opacity="0.65"
+					/>
+					<path
+						d="M0,72 C210,118 360,30 540,72 C720,114 930,40 1080,72 C1230,104 1380,90 1440,70 L1440,120 L0,120 Z"
+						fill="var(--secondary-60)"
+						opacity="0.35"
+					/>
+				</svg>
+			</div>
+			<div class="site-shell__content">
+				<slot />
+			</div>
 		</div>
 		<Footer />
 	</body>
+
+	<script is:inline>
+		const translations = {
+		  es: {
+		    nav: {
+		      home: "Home",
+		      about: "Acerca de",
+		      projects: "Proyectos",
+		      hobbies: "Hobbies",
+		      contact: "Contacto",
+		    },
+		    hero: {
+		      subtitle1: "Full Stack Developer especializado en Data Engineering, Machine Learning y DevOps.",
+		      subtitle2: "Construyo pipelines de datos robustos, modelos ML en producción y arquitecturas cloud escalables.",
+		      buttonProjects: "Ver Proyectos",
+		      buttonContact: "Contactar",
+		    },
+		    about: {
+		      title: "Sobre mí",
+		      description1: "¡Hola! Soy Franklin, Full Stack Developer con enfoque en Data Engineering, Machine Learning y DevOps. Actualmente estudio Ingeniería en Sistemas, combinando teoría académica con práctica profesional en proyectos reales.",
+		      description2: "Me apasiona construir sistemas que extraen valor de los datos: desde pipelines ETL hasta modelos ML en producción, pasando por infraestructura cloud automatizada. Trabajo con Python, FastAPI, Docker, Kubernetes y herramientas de observabilidad como Prometheus y Grafana. Cuando no estoy programando, disfruto de la música, la naturaleza, el origami, resolver puzzles, los cubos de Rubik y los videojuegos.",
+		    },
+		    skills: {
+		      title: "Habilidades",
+		      description: "Domino múltiples lenguajes incluyendo JavaScript, TypeScript, Python y Go. Especializado en desarrollo web moderno con React, Astro y Node.js, utilizando Tailwind, Sass y Bootstrap para diseño, combinado con bases de datos SQL y NoSQL.",
+		    },
+		    portfolio: {
+		      title: "Proyectos",
+		      otherProjects: "Otros Proyectos",
+		      featured: "Proyectos Destacados",
+		    },
+		    blog: {
+		      title: "Hobbies",
+		      description: "Un vistazo a mis intereses y proyectos personales fuera del trabajo.",
+		      readMore: "Leer mas",
+		    },
+		    contact: {
+		      title: "Contacto",
+		      description: "¿Tienes un proyecto en mente? ¿Quieres colaborar? ¡Hablemos! Estoy disponible para nuevas oportunidades y proyectos interesantes.",
+		      emailLabel: "Email",
+		      emailText: "Envíame un correo",
+		      githubLabel: "GitHub",
+		      linkedinLabel: "LinkedIn",
+		      linkedinText: "Conéctate conmigo",
+		      followLabel: "Sígueme en redes sociales",
+		      availability: "💼 Disponible para trabajos freelance y oportunidades laborales",
+		    },
+		    buttons: {
+		      viewMore: "Ver más",
+		      github: "GitHub",
+		      demo: "Demo",
+		    },
+		  },
+		  en: {
+		    nav: {
+		      home: "Home",
+		      about: "About",
+		      projects: "Projects",
+		      hobbies: "Hobbies",
+		      contact: "Contact",
+		    },
+		    hero: {
+		      subtitle1: "Full Stack Developer specialized in Data Engineering, Machine Learning and DevOps.",
+		      subtitle2: "I build robust data pipelines, production ML models and scalable cloud architectures.",
+		      buttonProjects: "View Projects",
+		      buttonContact: "Get in Touch",
+		    },
+		    about: {
+		      title: "About Me",
+		      description1: "Hello! I'm Franklin, a Full Stack Developer focused on Data Engineering, Machine Learning and DevOps. I'm currently studying Systems Engineering, combining academic theory with professional practice on real projects.",
+		      description2: "I'm passionate about building systems that extract value from data: from ETL pipelines to production ML models, through automated cloud infrastructure. I work with Python, FastAPI, Docker, Kubernetes and observability tools like Prometheus and Grafana. When I'm not coding, I enjoy music, nature, origami, solving puzzles, Rubik's cubes and video games.",
+		    },
+		    skills: {
+		      title: "Skills",
+		      description: "I master multiple languages including JavaScript, TypeScript, Python and Go. Specialized in modern web development with React, Astro and Node.js, using Tailwind, Sass and Bootstrap for design, combined with SQL and NoSQL databases.",
+		    },
+		    portfolio: {
+		      title: "Projects",
+		      otherProjects: "Other Projects",
+		      featured: "Featured Projects",
+		    },
+		    blog: {
+		      title: "Hobbies",
+		      description: "A glimpse into my interests and personal projects outside of work.",
+		      readMore: "Read more",
+		    },
+		    contact: {
+		      title: "Contact",
+		      description: "Do you have a project in mind? Want to collaborate? Let's talk! I'm available for new opportunities and interesting projects.",
+		      emailLabel: "Email",
+		      emailText: "Send me an email",
+		      githubLabel: "GitHub",
+		      linkedinLabel: "LinkedIn",
+		      linkedinText: "Connect with me",
+		      followLabel: "Follow me on social media",
+		      availability: "💼 Available for freelance work and job opportunities",
+		    },
+		    buttons: {
+		      viewMore: "View More",
+		      github: "GitHub",
+		      demo: "Demo",
+		    },
+		  },
+		};
+
+		function getTranslation(key, lang = "es") {
+		  const keys = key.split(".");
+		  let value = translations[lang];
+
+		  for (const k of keys) {
+		    value = value?.[k];
+		  }
+
+		  return value || key;
+		}
+
+		function updateAllTranslations(lang) {
+		  const elements = document.querySelectorAll("[data-i18n]");
+		  elements.forEach((el) => {
+		    const key = el.getAttribute("data-i18n");
+		    const text = getTranslation(key, lang);
+		    el.textContent = text;
+		  });
+
+		  // Update dynamic descriptions
+		  const descriptionElements = document.querySelectorAll("[data-description-es]");
+		  descriptionElements.forEach((el) => {
+		    const textES = el.getAttribute("data-description-es");
+		    const textEN = el.getAttribute("data-description-en");
+		    el.textContent = lang === "es" ? textES : textEN;
+		  });
+
+		  // Update dynamic titles
+		  const titleElements = document.querySelectorAll("[data-title-es]");
+		  titleElements.forEach((el) => {
+		    const textES = el.getAttribute("data-title-es");
+		    const textEN = el.getAttribute("data-title-en");
+		    el.textContent = lang === "es" ? textES : textEN;
+		  });
+		}
+
+		// Actualizar cuando cambia el idioma
+		document.addEventListener("languageChanged", (e) => {
+		  updateAllTranslations(e.detail.language);
+		});
+
+		// Actualizar al cargar
+		const initialLang = document.documentElement.getAttribute("data-language") || "es";
+		updateAllTranslations(initialLang);
+	</script>
 </html>

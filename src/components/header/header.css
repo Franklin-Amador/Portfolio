@@ -6,7 +6,12 @@
 	align-items: center;
 	color: var(--on-primary);
 	position: fixed;
-	z-index: 50;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
 }
 
 .header .header__container {

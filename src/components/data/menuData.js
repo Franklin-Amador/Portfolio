@@ -1,13 +1,13 @@
 export const mainMenu = [
-     {link:"#", content:"Home", icon:"lucide:home"},
-     {link:"#about", content:"About", icon:"octicon:person-24"},
-     {link:"#portafolio", content:"Proyectos", icon:"carbon:portfolio"},
-     {link:"#hobbies", content:"Hobbies", icon:"mdi:blog"},
-     {link:"#contact", content:"Contacto", icon:"mdi:email"}
-]
+     { link: "#", contentEs: "Home", contentEn: "Home", icon: "lucide:home", i18nKey: "nav.home" },
+     { link: "#about", contentEs: "Acerca de", contentEn: "About", icon: "octicon:person-24", i18nKey: "nav.about" },
+     { link: "#portafolio", contentEs: "Proyectos", contentEn: "Projects", icon: "carbon:portfolio", i18nKey: "nav.projects" },
+     { link: "#hobbies", contentEs: "Hobbies", contentEn: "Hobbies", icon: "mdi:blog", i18nKey: "nav.hobbies" },
+     { link: "#contact", contentEs: "Contacto", contentEn: "Contact", icon: "mdi:email", i18nKey: "nav.contact" }
+];
+
 export const menuBlog = [
-     {link:"/", content:"Home", icon:"lucide:home"},
-     {link:"/#about", content:"About", icon:"octicon:person-24"},
-     {link:"/#portafolio", content:"Proyectos", icon:"carbon:portfolio"},
-     
-]
+     { link: "/", contentEs: "Home", contentEn: "Home", icon: "lucide:home", i18nKey: "nav.home" },
+     { link: "/#about", contentEs: "Acerca de", contentEn: "About", icon: "octicon:person-24", i18nKey: "nav.about" },
+     { link: "/#portafolio", contentEs: "Proyectos", contentEn: "Projects", icon: "carbon:portfolio", i18nKey: "nav.projects" },
+];

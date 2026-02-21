@@ -12,9 +12,21 @@ const { nombre } = Astro.props;
 	<div class={terminal.body}>
 		<div class={terminal.user__line}>
 			<span class={terminal.user__name}>{nombre}@root: </span>
-			<span class={terminal.separator}>~</span>$ . printskills
+			<span class={terminal.separator}>~</span>$
+			<span class={terminal.command}>
+				<span class={terminal.command__text}>install skills</span>
+				<span class={terminal.cursor}>▋</span>
+			</span>
 		</div>
-		<div class="content">
+		<div class={terminal.install__line}>
+			<span class={terminal.spinner} aria-hidden="true"></span>
+			<span class={terminal.install__text}>Installing skills...</span>
+		</div>
+		<div class={terminal.done__line}>
+			<span class={terminal.done__icon} aria-hidden="true">✓</span>
+			<span class={terminal.done__text}>Skills installed.</span>
+		</div>
+		<div class={terminal.output}>
 			<slot />
 		</div>
 	</div>

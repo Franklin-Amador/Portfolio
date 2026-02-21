@@ -1,0 +1,87 @@
+---
+import './LanguageToggle.css';
+
+type Props = {
+  className?: string;
+  label?: string;
+};
+
+const { className = '', label } = Astro.props as Props;
+const instanceId = `lang-toggle-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<button
+  class={`lang-toggle ${className}`.trim()}
+  data-lang-toggle
+  data-lang-btn={instanceId}
+  type="button"
+  aria-label="Toggle language"
+  title="Cambiar idioma"
+>
+  <span class="lang-toggle__icon" aria-hidden="true">
+    <span class="lang-code">ES</span>
+  </span>
+  {label && (
+    <>
+      <span class="lang-toggle__text">
+        <span class="lang-toggle__label">{label}</span>
+        <span class="lang-toggle__current">Español</span>
+      </span>
+      <span class="lang-toggle__track" aria-hidden="true">
+        <span class="lang-toggle__thumb" />
+      </span>
+    </>
+  )}
+</button>
+
+<script is:inline define:vars={{ instanceId }}>
+  const btn = document.querySelector(`[data-lang-btn="${instanceId}"]`);
+  
+  const updateUI = () => {
+    const lang = document.documentElement.getAttribute('data-language') || 'es';
+    const langCode = btn?.querySelector('.lang-code');
+    const currentText = btn?.querySelector('.lang-toggle__current');
+    
+    if (langCode) {
+      langCode.textContent = lang === 'es' ? 'ES' : 'EN';
+    }
+    if (currentText) {
+      currentText.textContent = lang === 'es' ? 'Español' : 'English';
+    }
+  };
+
+  // Esperar a que el DOM esté listo y el atributo esté establecido
+  const initLang = () => {
+    const lang = document.documentElement.getAttribute('data-language') || 'es';
+    updateUI();
+  };
+
+  // Inicializar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLang);
+  } else {
+    initLang();
+  }
+
+  btn?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-language') || 'es';
+    const newLang = current === 'es' ? 'en' : 'es';
+    
+    // Agregar clase de animación al botón
+    btn.classList.add('lang-switching');
+    
+    // Cambiar el idioma
+    document.documentElement.setAttribute('data-language', newLang);
+    localStorage.setItem('language', newLang);
+    
+    // Disparar evento personalizado para que otros componentes se actualicen
+    document.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: newLang } }));
+    
+    updateUI();
+    
+    // Remover la clase de animación después de que termine
+    setTimeout(() => {
+      btn.classList.remove('lang-switching');
+    }, 300);
+  });
+</script>
