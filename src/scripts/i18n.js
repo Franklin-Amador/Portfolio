@@ -20,9 +20,11 @@ const translations = {
     },
     skills: {
       title: "Habilidades",
+      description: "Domino múltiples lenguajes incluyendo JavaScript, TypeScript, Python y Go. Especializado en desarrollo web moderno con React, Astro y Node.js, utilizando Tailwind, Sass y Bootstrap para diseño, combinado con bases de datos SQL y NoSQL.",
     },
     portfolio: {
       title: "Proyectos",
+      featured: "Proyectos Destacados",
     },
     blog: {
       title: "Hobbies",
@@ -30,6 +32,13 @@ const translations = {
     contact: {
       title: "Contacto",
       description: "¿Tienes un proyecto en mente? ¿Quieres colaborar? ¡Hablemos! Estoy disponible para nuevas oportunidades y proyectos interesantes.",
+      emailLabel: "Email",
+      emailText: "Envíame un correo",
+      githubLabel: "GitHub",
+      linkedinLabel: "LinkedIn",
+      linkedinText: "Conéctate conmigo",
+      followLabel: "Sígueme en redes sociales",
+      availability: "💼 Disponible para trabajos freelance y oportunidades laborales",
     },
     buttons: {
       viewMore: "Ver más",
@@ -58,9 +67,11 @@ const translations = {
     },
     skills: {
       title: "Skills",
+      description: "I master multiple languages including JavaScript, TypeScript, Python and Go. Specialized in modern web development with React, Astro and Node.js, using Tailwind, Sass and Bootstrap for design, combined with SQL and NoSQL databases.",
     },
     portfolio: {
       title: "Projects",
+      featured: "Featured Projects",
     },
     blog: {
       title: "Hobbies",
@@ -68,6 +79,13 @@ const translations = {
     contact: {
       title: "Contact",
       description: "Do you have a project in mind? Want to collaborate? Let's talk! I'm available for new opportunities and interesting projects.",
+      emailLabel: "Email",
+      emailText: "Send me an email",
+      githubLabel: "GitHub",
+      linkedinLabel: "LinkedIn",
+      linkedinText: "Connect with me",
+      followLabel: "Follow me on social media",
+      availability: "💼 Available for freelance work and job opportunities",
     },
     buttons: {
       viewMore: "View More",

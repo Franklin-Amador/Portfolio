@@ -238,63 +238,6 @@ body::after {
 	display: block;
 }
 
-/* Floating data nodes */
-.data-nodes {
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: -1;
-}
-
-.data-node {
-	position: absolute;
-	width: 6px;
-	height: 6px;
-	background: radial-gradient(
-		circle,
-		var(--primary-60),
-		color-mix(in srgb, var(--secondary-60) 60%, transparent)
-	);
-	border-radius: 50%;
-	box-shadow:
-		0 0 16px color-mix(in srgb, var(--primary-60) 80%, transparent),
-		0 0 32px color-mix(in srgb, var(--primary-60) 50%, transparent),
-		0 0 48px color-mix(in srgb, var(--secondary-60) 30%, transparent);
-	animation: float-node 8s ease-in-out infinite;
-	opacity: 0.9;
-}
-
-.data-node::before {
-	content: '';
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 100%;
-	height: 100%;
-	border-radius: 50%;
-	background: var(--primary-60);
-	animation: pulse-node 3s ease-in-out infinite;
-}
-
-.data-node:nth-child(2n) {
-	width: 8px;
-	height: 8px;
-	animation-duration: 10s;
-}
-
-.data-node:nth-child(3n) {
-	width: 5px;
-	height: 5px;
-	animation-duration: 12s;
-	animation-direction: reverse;
-}
-
-.data-node:nth-child(4n) {
-	box-shadow:
-		0 0 20px color-mix(in srgb, var(--secondary-60) 80%, transparent),
-		0 0 40px color-mix(in srgb, var(--secondary-60) 50%, transparent);
-}
 
 @keyframes wave-float {
 	0%, 100% {
@@ -305,35 +248,6 @@ body::after {
 	}
 }
 
-@keyframes float-node {
-	0%, 100% {
-		transform: translateY(0) scale(1);
-		opacity: 0.9;
-	}
-	25% {
-		transform: translateY(-15px) translateX(10px) scale(1.2);
-		opacity: 1;
-	}
-	50% {
-		transform: translateY(-25px) scale(1.4);
-		opacity: 0.95;
-	}
-	75% {
-		transform: translateY(-15px) translateX(-10px) scale(1.2);
-		opacity: 1;
-	}
-}
-
-@keyframes pulse-node {
-	0%, 100% {
-		transform: translate(-50%, -50%) scale(1);
-		opacity: 0.8;
-	}
-	50% {
-		transform: translate(-50%, -50%) scale(2.5);
-		opacity: 0;
-	}
-}
 
 @keyframes scanline {
 	0% {

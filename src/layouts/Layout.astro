@@ -3,6 +3,7 @@ import "../styles/global.css"
 import ThemeToggle from '../components/ThemeToggle/ThemeToggle.astro';
 import LanguageToggle from '../components/LanguageToggle/LanguageToggle.astro';
 import Footer from '../components/Footer/Footer.astro';
+import NeuralCanvas from '../components/NeuralCanvas/NeuralCanvas.astro';
 interface Props {
 	title: string;
 	description?: string;
@@ -81,19 +82,7 @@ const { title, description = "Portfolio de Franklin Amador - Full Stack Develope
 		<ThemeToggle className="theme-toggle--floating" />
 		<LanguageToggle className="lang-toggle--floating" />
 		<div class="flex-1 w-full site-shell">
-			<!-- Decorative floating nodes -->
-			<div class="data-nodes" aria-hidden="true">
-				<span class="data-node" style="left: 12%; top: 15%; animation-delay: 0s;"></span>
-				<span class="data-node" style="left: 78%; top: 25%; animation-delay: 1.2s;"></span>
-				<span class="data-node" style="left: 35%; top: 40%; animation-delay: 2.4s;"></span>
-				<span class="data-node" style="left: 88%; top: 55%; animation-delay: 3.6s;"></span>
-				<span class="data-node" style="left: 58%; top: 65%; animation-delay: 0.8s;"></span>
-				<span class="data-node" style="left: 20%; top: 75%; animation-delay: 4.8s;"></span>
-				<span class="data-node" style="left: 92%; top: 18%; animation-delay: 2s;"></span>
-				<span class="data-node" style="left: 45%; top: 88%; animation-delay: 3.2s;"></span>
-				<span class="data-node" style="left: 8%; top: 50%; animation-delay: 1.6s;"></span>
-				<span class="data-node" style="left: 65%; top: 32%; animation-delay: 4s;"></span>
-			</div>
+			<NeuralCanvas />
 			<div class="site-wave" aria-hidden="true">
 				<svg viewBox="0 0 1440 120" preserveAspectRatio="none">
 					<path

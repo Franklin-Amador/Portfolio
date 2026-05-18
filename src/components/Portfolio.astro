@@ -66,13 +66,13 @@ const otherProjects = getPortafolioData.slice(3);
 	.portfolio__elements {
 		max-width: var(--max-width);
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		justify-items: center;
 		gap: 3rem;
 		width: 100%;
 	}
 
-	@media screen and (max-width: 768px) {
+	@media screen and (max-width: 700px) {
 		.portfolio__elements {
 			grid-template-columns: 1fr;
 			gap: 2rem;
@@ -86,23 +86,31 @@ const otherProjects = getPortafolioData.slice(3);
 
 	const $cards = document.querySelectorAll('.card__portfolio');
 	$cards.forEach((card) => {
-		const $container = card.querySelector<HTMLDivElement>(
-			'.descripcion__container'
-		);
+		const $container = card.querySelector<HTMLDivElement>('.descripcion__container');
 		const $img = card.querySelector('img');
 		if (!$img || !$container) return;
 
 		const setBg = () => {
+			const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+			if (theme === 'light') {
+				$container.style.background = '';
+				return;
+			}
 			const [rbgString] = getIMGAverageColor($img, 0.5);
-			// Aplicar un gradiente sutil basado en el color promedio de la imagen
-			$container.style.background = `linear-gradient(to bottom, ${rbgString}, var(--card-gradient-end))`;
+			if (rbgString) {
+				$container.style.background = `linear-gradient(to bottom, ${rbgString}, var(--card-gradient-end))`;
+			}
 		};
-		
-		// Esperar a que la imagen se cargue
-		if ($img.complete) {
+
+		if ($img.complete && $img.naturalWidth > 0) {
 			setBg();
 		} else {
 			$img.onload = setBg;
 		}
+
+		new MutationObserver(setBg).observe(
+			document.documentElement,
+			{ attributes: true, attributeFilter: ['data-theme'] }
+		);
 	});
 </script>

@@ -14,7 +14,9 @@
 
 .card__portfolio:hover {
 	transform: translateY(-12px) scale(1.02);
-	box-shadow: 0 20px 50px rgba(118, 68, 227, 0.4), 0 0 0 1px var(--primary-60);
+	box-shadow:
+		0 20px 50px color-mix(in srgb, var(--primary-60) 35%, transparent),
+		0 0 0 1px var(--primary-60);
 	border-color: var(--primary-70);
 }
 
@@ -33,28 +35,53 @@
 	filter: brightness(1);
 }
 
+/* Dark mode: JS override applies average color gradient */
 .card__portfolio .descripcion__container {
 	display: flex;
 	flex-direction: column;
 	flex: 1;
 	padding: 2rem;
-	background: linear-gradient(to bottom, rgba(10, 8, 20, 0.92), rgba(15, 12, 28, 0.95));
+	background: linear-gradient(
+		to bottom,
+		color-mix(in srgb, var(--primary-0) 90%, transparent),
+		var(--card-gradient-end)
+	);
 	color: var(--on-primary);
 	gap: 1.2rem;
 	backdrop-filter: blur(8px);
 }
 
+/* Light mode: JS skips override; use a clean lavender-tinted panel */
+[data-theme="light"] .card__portfolio .descripcion__container {
+	background: linear-gradient(
+		to bottom,
+		color-mix(in srgb, var(--primary-30) 40%, var(--primary-10)),
+		var(--primary-10)
+	);
+}
+
 .card__portfolio .descripcion__container .card__title {
 	font-size: 2rem;
 	font-weight: 700;
-	color: #ffffff;
+	color: var(--primary-100);
 	margin: 0;
 	line-height: 1.3;
 	transition: all 0.3s ease;
 }
 
+[data-theme="light"] .card__portfolio .descripcion__container .card__title {
+	color: var(--primary-95);
+}
+
 .card__portfolio:hover .descripcion__container .card__title {
 	background: var(--text-gradient);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .card__portfolio:hover .descripcion__container .card__title {
+	background: var(--text-gradient-light);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -71,7 +98,7 @@
 .card__portfolio .descripcion p {
 	font-size: 1.4rem;
 	line-height: 1.6;
-	color: #e8e8e8;
+	color: var(--primary-90);
 	margin: 0;
 	display: -webkit-box;
 	-webkit-line-clamp: 3;
@@ -81,8 +108,16 @@
 	transition: all 0.3s ease;
 }
 
+[data-theme="light"] .card__portfolio .descripcion p {
+	color: var(--primary-80);
+}
+
 .card__portfolio:hover .descripcion p {
-	color: #ffffff;
+	color: var(--primary-100);
+}
+
+[data-theme="light"] .card__portfolio:hover .descripcion p {
+	color: var(--primary-99);
 }
 
 .card__portfolio .skills {
@@ -94,12 +129,12 @@
 
 .card__portfolio .skills iconify-icon {
 	font-size: 2.8rem;
-	color: #b8e0ff;
+	color: var(--primary-80);
 	transition: all 0.3s ease;
 }
 
 .card__portfolio:hover .skills iconify-icon {
-	color: #ffffff;
+	color: var(--primary-95);
 	transform: translateY(-3px);
 }
 
@@ -121,16 +156,16 @@
 	font-weight: 600;
 	text-decoration: none;
 	transition: all 0.3s ease;
-	color: #ffffff;
-	background: rgba(118, 68, 227, 0.7);
-	border: 1px solid rgba(168, 85, 247, 0.5);
+	color: var(--primary-95);
+	background: color-mix(in srgb, var(--primary-50) 55%, transparent);
+	border: 1px solid color-mix(in srgb, var(--primary-60) 45%, transparent);
 }
 
 .card__portfolio .buttons a:hover {
-	background: rgba(168, 85, 247, 0.85);
-	border-color: rgba(168, 85, 247, 0.7);
+	background: color-mix(in srgb, var(--primary-60) 80%, transparent);
+	border-color: color-mix(in srgb, var(--primary-70) 65%, transparent);
 	transform: translateY(-2px);
-	box-shadow: 0 4px 12px rgba(168, 85, 247, 0.5);
+	box-shadow: 0 4px 12px color-mix(in srgb, var(--primary-60) 40%, transparent);
 }
 
 .card__portfolio .buttons a span {

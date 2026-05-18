@@ -89,6 +89,7 @@ export const portafolioData = [
 		demoURL: '',
 		repoURL: 'https://github.com/Franklin-Amador/Python/tree/main/Tetris',
 		anim: 'fade-right',
+		averageBrightness: 0.12,
 	},
 	{
 		imgSrc: "/img/ERP.jpeg",
@@ -114,6 +115,7 @@ export const portafolioData = [
 		demoURL: '',
 		repoURL: 'https://github.com/Franklin-Amador/Portfolio',
 		anim: 'fade-left',
+		averageBrightness: 0.12,
 	},
 ];
 

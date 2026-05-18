@@ -1,0 +1,262 @@
+<canvas id="neural-canvas" aria-hidden="true"></canvas>
+
+<style>
+	#neural-canvas {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		height: 100vh;
+		pointer-events: none;
+		z-index: 0;
+	}
+</style>
+
+<script>
+(function () {
+	const canvas = document.getElementById('neural-canvas');
+	if (!canvas || !(canvas instanceof HTMLCanvasElement)) return;
+
+	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		canvas.style.display = 'none';
+		return;
+	}
+
+	const ctx = canvas.getContext('2d');
+
+	const CFG = {
+		nodeCount: 68,
+		maxDist: 155,
+		minSpeed: 0.12,
+		maxSpeed: 0.55,
+		minRadius: 1.5,
+		maxRadius: 3.2,
+		repulsionRadius: 130,
+		repulsionStrength: 0.38,
+		speedCap: 1.6,
+		damping: 0.984,
+		pulseChance: 0.028,
+		pulseStep: 0.0065,
+	};
+
+	let W = 0, H = 0;
+	let nodes = [];
+	let pulses = [];
+	let mouse = { x: -9999, y: -9999 };
+	let primary = { r: 134, g: 100, b: 238 };   // --primary-60 fallback
+	let secondary = { r: 220, g: 88, b: 152 };  // --secondary-60 fallback
+
+	function hexToRgb(hex) {
+		const h = hex.trim().replace('#', '');
+		if (h.length !== 6) return null;
+		return {
+			r: parseInt(h.slice(0, 2), 16),
+			g: parseInt(h.slice(2, 4), 16),
+			b: parseInt(h.slice(4, 6), 16),
+		};
+	}
+
+	function readColors() {
+		const s = getComputedStyle(document.documentElement);
+		const p = hexToRgb(s.getPropertyValue('--primary-60').trim());
+		const sec = hexToRgb(s.getPropertyValue('--secondary-60').trim());
+		if (p) primary = p;
+		if (sec) secondary = sec;
+	}
+
+	function resize() {
+		W = canvas.width = window.innerWidth;
+		H = canvas.height = window.innerHeight;
+	}
+
+	function makeNode() {
+		const angle = Math.random() * Math.PI * 2;
+		const speed = CFG.minSpeed + Math.random() * (CFG.maxSpeed - CFG.minSpeed);
+		return {
+			x: Math.random() * W,
+			y: Math.random() * H,
+			vx: Math.cos(angle) * speed,
+			vy: Math.sin(angle) * speed,
+			r: CFG.minRadius + Math.random() * (CFG.maxRadius - CFG.minRadius),
+			alpha: 0.55 + Math.random() * 0.45,
+			phase: Math.random() * Math.PI * 2,
+		};
+	}
+
+	function spawnPulse() {
+		const maxSq = CFG.maxDist * CFG.maxDist;
+		const ai = Math.floor(Math.random() * nodes.length);
+		const a = nodes[ai];
+		for (let i = 0; i < nodes.length; i++) {
+			if (i === ai) continue;
+			const b = nodes[i];
+			const dx = b.x - a.x, dy = b.y - a.y;
+			if (dx * dx + dy * dy < maxSq) {
+				pulses.push({ from: a, to: b, t: 0 });
+				return;
+			}
+		}
+	}
+
+	function update() {
+		for (const n of nodes) {
+			const dx = n.x - mouse.x;
+			const dy = n.y - mouse.y;
+			const dSq = dx * dx + dy * dy;
+			const rSq = CFG.repulsionRadius * CFG.repulsionRadius;
+
+			if (dSq < rSq && dSq > 0.01) {
+				const d = Math.sqrt(dSq);
+				const f = (1 - d / CFG.repulsionRadius) * CFG.repulsionStrength;
+				n.vx += (dx / d) * f;
+				n.vy += (dy / d) * f;
+			}
+
+			const spd = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
+			if (spd > CFG.speedCap) {
+				n.vx = (n.vx / spd) * CFG.speedCap;
+				n.vy = (n.vy / spd) * CFG.speedCap;
+			}
+
+			n.vx *= CFG.damping;
+			n.vy *= CFG.damping;
+			n.x += n.vx;
+			n.y += n.vy;
+			n.phase += 0.022;
+
+			if (n.x < 0)  { n.x = 0;  n.vx = Math.abs(n.vx); }
+			if (n.x > W)  { n.x = W;  n.vx = -Math.abs(n.vx); }
+			if (n.y < 0)  { n.y = 0;  n.vy = Math.abs(n.vy); }
+			if (n.y > H)  { n.y = H;  n.vy = -Math.abs(n.vy); }
+		}
+
+		for (let i = pulses.length - 1; i >= 0; i--) {
+			pulses[i].t += CFG.pulseStep;
+			if (pulses[i].t >= 1) pulses.splice(i, 1);
+		}
+
+		if (Math.random() < CFG.pulseChance) spawnPulse();
+	}
+
+	function draw() {
+		ctx.clearRect(0, 0, W, H);
+
+		const MAX = CFG.maxDist;
+		const pr = primary.r, pg = primary.g, pb = primary.b;
+		const sr = secondary.r, sg = secondary.g, sb = secondary.b;
+
+		// Connections
+		for (let i = 0; i < nodes.length; i++) {
+			for (let j = i + 1; j < nodes.length; j++) {
+				const a = nodes[i], b = nodes[j];
+				const dx = b.x - a.x, dy = b.y - a.y;
+				const dSq = dx * dx + dy * dy;
+				if (dSq >= MAX * MAX) continue;
+
+				const d = Math.sqrt(dSq);
+				const alpha = (1 - d / MAX) * 0.32;
+				ctx.beginPath();
+				ctx.strokeStyle = `rgba(${pr},${pg},${pb},${alpha})`;
+				ctx.lineWidth = 0.7;
+				ctx.moveTo(a.x, a.y);
+				ctx.lineTo(b.x, b.y);
+				ctx.stroke();
+			}
+		}
+
+		// Pulses traveling along connections
+		for (const p of pulses) {
+			const x = p.from.x + (p.to.x - p.from.x) * p.t;
+			const y = p.from.y + (p.to.y - p.from.y) * p.t;
+
+			// Fade in/out at endpoints
+			const fade = Math.sin(p.t * Math.PI);
+
+			const glow = ctx.createRadialGradient(x, y, 0, x, y, 12);
+			glow.addColorStop(0, `rgba(${sr},${sg},${sb},${0.9 * fade})`);
+			glow.addColorStop(0.35, `rgba(${sr},${sg},${sb},${0.35 * fade})`);
+			glow.addColorStop(1, `rgba(${sr},${sg},${sb},0)`);
+			ctx.beginPath();
+			ctx.arc(x, y, 12, 0, Math.PI * 2);
+			ctx.fillStyle = glow;
+			ctx.fill();
+
+			ctx.beginPath();
+			ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+			ctx.fillStyle = `rgba(${sr},${sg},${sb},${fade})`;
+			ctx.fill();
+		}
+
+		// Nodes
+		for (const n of nodes) {
+			const pulse = 0.72 + Math.sin(n.phase) * 0.28;
+			const glowR = n.r * 5.5;
+
+			const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
+			glow.addColorStop(0, `rgba(${pr},${pg},${pb},${n.alpha * 0.55 * pulse})`);
+			glow.addColorStop(0.45, `rgba(${pr},${pg},${pb},${n.alpha * 0.18 * pulse})`);
+			glow.addColorStop(1, `rgba(${pr},${pg},${pb},0)`);
+			ctx.beginPath();
+			ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
+			ctx.fillStyle = glow;
+			ctx.fill();
+
+			ctx.beginPath();
+			ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
+			ctx.fillStyle = `rgba(${pr},${pg},${pb},${n.alpha})`;
+			ctx.fill();
+		}
+	}
+
+	let visible = true;
+	document.addEventListener('visibilitychange', () => {
+		visible = document.visibilityState === 'visible';
+		if (visible) tick();
+	});
+
+	function tick() {
+		if (!visible) return;
+		update();
+		draw();
+		requestAnimationFrame(tick);
+	}
+
+	window.addEventListener('resize', () => {
+		resize();
+		for (const n of nodes) {
+			n.x = Math.min(n.x, W);
+			n.y = Math.min(n.y, H);
+		}
+	});
+
+	document.addEventListener('mousemove', (e) => {
+		mouse.x = e.clientX;
+		mouse.y = e.clientY;
+	});
+
+	document.addEventListener('mouseleave', () => {
+		mouse.x = -9999;
+		mouse.y = -9999;
+	});
+
+	document.addEventListener('touchmove', (e) => {
+		const t = e.touches[0];
+		if (t) { mouse.x = t.clientX; mouse.y = t.clientY; }
+	}, { passive: true });
+
+	document.addEventListener('touchend', () => {
+		mouse.x = -9999;
+		mouse.y = -9999;
+	});
+
+	// Re-read palette on theme toggle
+	new MutationObserver(readColors).observe(
+		document.documentElement,
+		{ attributes: true, attributeFilter: ['data-theme'] }
+	);
+
+	resize();
+	readColors();
+	nodes = Array.from({ length: CFG.nodeCount }, makeNode);
+	tick();
+})();
+</script>
