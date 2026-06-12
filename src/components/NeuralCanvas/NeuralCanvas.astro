@@ -24,23 +24,31 @@
 	const ctx = canvas.getContext('2d');
 
 	const CFG = {
-		nodeCount: 68,
+		nodeDensity: 18000, // px² por nodo: la cantidad se adapta a la pantalla
+		minNodes: 30,
+		maxNodes: 90,
 		maxDist: 155,
 		minSpeed: 0.12,
 		maxSpeed: 0.55,
 		minRadius: 1.5,
 		maxRadius: 3.2,
-		repulsionRadius: 130,
-		repulsionStrength: 0.38,
+		repulsionRadius: 115,
+		repulsionStrength: 0.3,
 		speedCap: 1.6,
 		damping: 0.984,
 		pulseChance: 0.028,
 		pulseStep: 0.0065,
+		// Propagación en cadena: al llegar una señal puede saltar al siguiente nodo
+		chainChance: 0.55,
+		maxChainGen: 3,
+		maxPulses: 36,
+		cursorRadius: 170,
 	};
 
 	let W = 0, H = 0;
 	let nodes = [];
 	let pulses = [];
+	let rings = [];
 	let mouse = { x: -9999, y: -9999 };
 	let primary = { r: 134, g: 100, b: 238 };   // --primary-60 fallback
 	let secondary = { r: 220, g: 88, b: 152 };  // --secondary-60 fallback
@@ -64,37 +72,53 @@
 	}
 
 	function resize() {
-		W = canvas.width = window.innerWidth;
-		H = canvas.height = window.innerHeight;
+		// Canvas a resolución física (retina): sin esto las líneas se ven borrosas
+		const dpr = Math.min(window.devicePixelRatio || 1, 2);
+		W = window.innerWidth;
+		H = window.innerHeight;
+		canvas.width = W * dpr;
+		canvas.height = H * dpr;
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 	}
+
+	const lerp = (a, b, t) => Math.round(a + (b - a) * t);
 
 	function makeNode() {
 		const angle = Math.random() * Math.PI * 2;
-		const speed = CFG.minSpeed + Math.random() * (CFG.maxSpeed - CFG.minSpeed);
+		// depth: los nodos "lejanos" son más pequeños, lentos y tenues (parallax sutil)
+		const depth = 0.45 + Math.random() * 0.55;
+		const speed = (CFG.minSpeed + Math.random() * (CFG.maxSpeed - CFG.minSpeed)) * depth;
 		return {
 			x: Math.random() * W,
 			y: Math.random() * H,
 			vx: Math.cos(angle) * speed,
 			vy: Math.sin(angle) * speed,
-			r: CFG.minRadius + Math.random() * (CFG.maxRadius - CFG.minRadius),
-			alpha: 0.55 + Math.random() * 0.45,
+			r: (CFG.minRadius + Math.random() * (CFG.maxRadius - CFG.minRadius)) * depth,
+			alpha: (0.55 + Math.random() * 0.45) * (0.6 + depth * 0.4),
 			phase: Math.random() * Math.PI * 2,
+			// mix: posición de cada nodo en el degradado morado→rosa de la marca
+			mix: Math.pow(Math.random(), 1.6) * 0.85,
+			flash: 0,
 		};
 	}
 
-	function spawnPulse() {
+	function targetCount() {
+		return Math.max(CFG.minNodes, Math.min(CFG.maxNodes, Math.round((W * H) / CFG.nodeDensity)));
+	}
+
+	function spawnPulse(from, gen = 0) {
+		if (pulses.length >= CFG.maxPulses) return;
+		const a = from || nodes[Math.floor(Math.random() * nodes.length)];
 		const maxSq = CFG.maxDist * CFG.maxDist;
-		const ai = Math.floor(Math.random() * nodes.length);
-		const a = nodes[ai];
-		for (let i = 0; i < nodes.length; i++) {
-			if (i === ai) continue;
-			const b = nodes[i];
+		const neighbors = [];
+		for (const b of nodes) {
+			if (b === a) continue;
 			const dx = b.x - a.x, dy = b.y - a.y;
-			if (dx * dx + dy * dy < maxSq) {
-				pulses.push({ from: a, to: b, t: 0 });
-				return;
-			}
+			if (dx * dx + dy * dy < maxSq) neighbors.push(b);
 		}
+		if (!neighbors.length) return;
+		const to = neighbors[Math.floor(Math.random() * neighbors.length)];
+		pulses.push({ from: a, to, t: 0, gen });
 	}
 
 	function update() {
@@ -122,6 +146,7 @@
 			n.x += n.vx;
 			n.y += n.vy;
 			n.phase += 0.022;
+			if (n.flash > 0) n.flash *= 0.93;
 
 			if (n.x < 0)  { n.x = 0;  n.vx = Math.abs(n.vx); }
 			if (n.x > W)  { n.x = W;  n.vx = -Math.abs(n.vx); }
@@ -130,8 +155,21 @@
 		}
 
 		for (let i = pulses.length - 1; i >= 0; i--) {
-			pulses[i].t += CFG.pulseStep;
-			if (pulses[i].t >= 1) pulses.splice(i, 1);
+			const p = pulses[i];
+			p.t += CFG.pulseStep;
+			if (p.t >= 1) {
+				// La señal "activa" al nodo receptor y puede seguir propagándose
+				p.to.flash = 1;
+				if (p.gen < CFG.maxChainGen && Math.random() < CFG.chainChance) {
+					spawnPulse(p.to, p.gen + 1);
+				}
+				pulses.splice(i, 1);
+			}
+		}
+
+		for (let i = rings.length - 1; i >= 0; i--) {
+			rings[i].t += 0.018;
+			if (rings[i].t >= 1) rings.splice(i, 1);
 		}
 
 		if (Math.random() < CFG.pulseChance) spawnPulse();
@@ -144,7 +182,7 @@
 		const pr = primary.r, pg = primary.g, pb = primary.b;
 		const sr = secondary.r, sg = secondary.g, sb = secondary.b;
 
-		// Connections
+		// Connections — el color interpola entre los tonos de sus dos nodos
 		for (let i = 0; i < nodes.length; i++) {
 			for (let j = i + 1; j < nodes.length; j++) {
 				const a = nodes[i], b = nodes[j];
@@ -153,14 +191,54 @@
 				if (dSq >= MAX * MAX) continue;
 
 				const d = Math.sqrt(dSq);
-				const alpha = (1 - d / MAX) * 0.32;
+				const closeness = 1 - d / MAX;
+				const alpha = closeness * 0.34;
+				const t = (a.mix + b.mix) / 2;
 				ctx.beginPath();
-				ctx.strokeStyle = `rgba(${pr},${pg},${pb},${alpha})`;
-				ctx.lineWidth = 0.7;
+				ctx.strokeStyle = `rgba(${lerp(pr, sr, t)},${lerp(pg, sg, t)},${lerp(pb, sb, t)},${alpha})`;
+				ctx.lineWidth = 0.5 + closeness * 0.7;
 				ctx.moveTo(a.x, a.y);
 				ctx.lineTo(b.x, b.y);
 				ctx.stroke();
 			}
+		}
+
+		// El cursor actúa como una neurona más: se enlaza a los nodos cercanos
+		if (mouse.x > -9000) {
+			const CR = CFG.cursorRadius;
+			for (const n of nodes) {
+				const dx = n.x - mouse.x, dy = n.y - mouse.y;
+				const dSq = dx * dx + dy * dy;
+				if (dSq >= CR * CR) continue;
+				const d = Math.sqrt(dSq);
+				const a = (1 - d / CR) * 0.4;
+				ctx.beginPath();
+				ctx.strokeStyle = `rgba(${sr},${sg},${sb},${a})`;
+				ctx.lineWidth = 0.8;
+				ctx.moveTo(mouse.x, mouse.y);
+				ctx.lineTo(n.x, n.y);
+				ctx.stroke();
+			}
+
+			const cg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 26);
+			cg.addColorStop(0, `rgba(${sr},${sg},${sb},0.32)`);
+			cg.addColorStop(1, `rgba(${sr},${sg},${sb},0)`);
+			ctx.beginPath();
+			ctx.arc(mouse.x, mouse.y, 26, 0, Math.PI * 2);
+			ctx.fillStyle = cg;
+			ctx.fill();
+		}
+
+		// Ondas expansivas de los clics
+		for (const ring of rings) {
+			const ease = 1 - Math.pow(1 - ring.t, 3);
+			const r = ease * 240;
+			const a = (1 - ring.t) * 0.45;
+			ctx.beginPath();
+			ctx.strokeStyle = `rgba(${sr},${sg},${sb},${a})`;
+			ctx.lineWidth = 1.5;
+			ctx.arc(ring.x, ring.y, r, 0, Math.PI * 2);
+			ctx.stroke();
 		}
 
 		// Pulses traveling along connections
@@ -186,15 +264,21 @@
 			ctx.fill();
 		}
 
-		// Nodes
+		// Nodes — cada uno con su tono propio; al recibir una señal destellan
 		for (const n of nodes) {
-			const pulse = 0.72 + Math.sin(n.phase) * 0.28;
-			const glowR = n.r * 5.5;
+			const f = n.flash > 0.02 ? n.flash : 0;
+			const pulse = 0.72 + Math.sin(n.phase) * 0.28 + f * 0.9;
+			const glowR = n.r * (5.5 + f * 4);
+			// El destello empuja el color hacia blanco
+			const nr = lerp(lerp(pr, sr, n.mix), 255, f * 0.65);
+			const ng = lerp(lerp(pg, sg, n.mix), 255, f * 0.65);
+			const nb = lerp(lerp(pb, sb, n.mix), 255, f * 0.65);
+			const alpha = Math.min(1, n.alpha + f * 0.5);
 
 			const glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, glowR);
-			glow.addColorStop(0, `rgba(${pr},${pg},${pb},${n.alpha * 0.55 * pulse})`);
-			glow.addColorStop(0.45, `rgba(${pr},${pg},${pb},${n.alpha * 0.18 * pulse})`);
-			glow.addColorStop(1, `rgba(${pr},${pg},${pb},0)`);
+			glow.addColorStop(0, `rgba(${nr},${ng},${nb},${alpha * 0.55 * pulse})`);
+			glow.addColorStop(0.45, `rgba(${nr},${ng},${nb},${alpha * 0.18 * pulse})`);
+			glow.addColorStop(1, `rgba(${nr},${ng},${nb},0)`);
 			ctx.beginPath();
 			ctx.arc(n.x, n.y, glowR, 0, Math.PI * 2);
 			ctx.fillStyle = glow;
@@ -202,7 +286,7 @@
 
 			ctx.beginPath();
 			ctx.arc(n.x, n.y, n.r * pulse, 0, Math.PI * 2);
-			ctx.fillStyle = `rgba(${pr},${pg},${pb},${n.alpha})`;
+			ctx.fillStyle = `rgba(${nr},${ng},${nb},${alpha})`;
 			ctx.fill();
 		}
 	}
@@ -226,6 +310,10 @@
 			n.x = Math.min(n.x, W);
 			n.y = Math.min(n.y, H);
 		}
+		// Ajustar la densidad al nuevo tamaño
+		const target = targetCount();
+		while (nodes.length < target) nodes.push(makeNode());
+		if (nodes.length > target) nodes.length = target;
 	});
 
 	document.addEventListener('mousemove', (e) => {
@@ -248,6 +336,31 @@
 		mouse.y = -9999;
 	});
 
+	// Clic = activación: onda expansiva, empuje suave y señales desde el nodo más cercano
+	document.addEventListener('click', (e) => {
+		const cx = e.clientX, cy = e.clientY;
+		rings.push({ x: cx, y: cy, t: 0 });
+
+		let nearest = null, best = Infinity;
+		for (const n of nodes) {
+			const dx = n.x - cx, dy = n.y - cy;
+			const dSq = dx * dx + dy * dy;
+			if (dSq < 220 * 220 && dSq > 0.01) {
+				const d = Math.sqrt(dSq);
+				const force = (1 - d / 220) * 1.4;
+				n.vx += (dx / d) * force;
+				n.vy += (dy / d) * force;
+			}
+			if (dSq < best) { best = dSq; nearest = n; }
+		}
+		if (nearest) {
+			nearest.flash = 1;
+			spawnPulse(nearest, 1);
+			spawnPulse(nearest, 1);
+			spawnPulse(nearest, 1);
+		}
+	});
+
 	// Re-read palette on theme toggle
 	new MutationObserver(readColors).observe(
 		document.documentElement,
@@ -256,7 +369,7 @@
 
 	resize();
 	readColors();
-	nodes = Array.from({ length: CFG.nodeCount }, makeNode);
+	nodes = Array.from({ length: targetCount() }, makeNode);
 	tick();
 })();
 </script>

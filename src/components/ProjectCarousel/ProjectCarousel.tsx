@@ -4,6 +4,7 @@ import { getTranslation } from '../../utils/translations';
 
 interface Project {
 	imgSrc: string;
+	imgSrcSet?: string;
 	title: string;
 	titleEN?: string;
 	skills: string[];
@@ -17,10 +18,14 @@ interface ProjectCarouselProps {
 	projects: Project[];
 }
 
+const prefersReducedMotion = () =>
+	typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+	const [isAutoPlaying, setIsAutoPlaying] = useState(() => !prefersReducedMotion());
 	const [language, setLanguage] = useState<'es' | 'en'>('es');
+	const isHoveredRef = useRef(false);
 
 	// Refs para manipulación imperativa (sin re-renders)
 	const activeCardRef = useRef<HTMLDivElement | null>(null);
@@ -68,6 +73,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 	useEffect(() => {
 		const card = activeCardRef.current;
 		if (!card) return;
+		if (prefersReducedMotion() || window.matchMedia('(pointer: coarse)').matches) return;
 
 		const onMove = (e: MouseEvent) => {
 			const rect = card.getBoundingClientRect();
@@ -93,12 +99,29 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 	const pauseAndScheduleResume = () => {
 		setIsAutoPlaying(false);
 		if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
-		resumeTimerRef.current = setTimeout(() => setIsAutoPlaying(true), 8000);
+		resumeTimerRef.current = setTimeout(() => {
+			if (!prefersReducedMotion() && !isHoveredRef.current) setIsAutoPlaying(true);
+		}, 8000);
 	};
 
 	const goToSlide = (i: number) => { setCurrentIndex(i); pauseAndScheduleResume(); };
 	const nextSlide = () => { setCurrentIndex((p) => (p + 1) % projects.length); pauseAndScheduleResume(); };
 	const prevSlide = () => { setCurrentIndex((p) => (p - 1 + projects.length) % projects.length); pauseAndScheduleResume(); };
+
+	const pauseOnInteract = () => {
+		isHoveredRef.current = true;
+		setIsAutoPlaying(false);
+	};
+
+	const resumeAfterInteract = () => {
+		isHoveredRef.current = false;
+		if (!prefersReducedMotion()) setIsAutoPlaying(true);
+	};
+
+	const onKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+		if (e.key === 'ArrowRight') { e.preventDefault(); nextSlide(); }
+	};
 
 	const t = (key: string) => getTranslation(key, language);
 
@@ -108,7 +131,18 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 				<span>{t('portfolio.featured')}</span>
 			</div>
 
-			<div className="carousel-wrapper">
+			<div
+				className="carousel-wrapper"
+				role="region"
+				aria-roledescription="carousel"
+				aria-label={t('portfolio.featured')}
+				tabIndex={0}
+				onKeyDown={onKeyDown}
+				onMouseEnter={pauseOnInteract}
+				onMouseLeave={resumeAfterInteract}
+				onFocusCapture={pauseOnInteract}
+				onBlurCapture={resumeAfterInteract}
+			>
 				<button className="carousel-btn carousel-btn-prev" onClick={prevSlide} aria-label={t('buttons.prevProject')}>
 					<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor">
 						<path d="M15 18l-6-6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -127,6 +161,7 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 							<div
 								key={index}
 								className="carousel-slide"
+								aria-hidden={!isActive}
 								style={{
 									transform: `translateX(${offset * 110}%) scale(${isActive ? 1 : 0.82})`,
 									opacity: Math.abs(offset) > 1 ? 0 : isActive ? 1 : 0.45,
@@ -141,7 +176,13 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 									ref={isActive ? activeCardRef : null}
 								>
 									<div className="carousel-card-image">
-										<img src={project.imgSrc} alt={title} loading="lazy" />
+										<img
+											src={project.imgSrc}
+											srcSet={project.imgSrcSet}
+											sizes="(max-width: 768px) 100vw, 60vw"
+											alt={title}
+											loading="lazy"
+										/>
 									</div>
 
 									<div className="carousel-card-content">
@@ -153,12 +194,12 @@ export default function ProjectCarousel({ projects }: ProjectCarouselProps) {
 											))}
 										</div>
 										<div className="carousel-card-buttons">
-											<a href={project.repoURL} target="_blank" rel="noopener noreferrer" className="carousel-btn-link">
+											<a href={project.repoURL} target="_blank" rel="noopener noreferrer" className="carousel-btn-link" tabIndex={isActive ? 0 : -1}>
 												<iconify-icon icon="mdi:github" width="18" height="18" />
 												{t('buttons.repo')}
 											</a>
 											{project.demoURL && (
-												<a href={project.demoURL} target="_blank" rel="noopener noreferrer" className="carousel-btn-link carousel-btn-demo">
+												<a href={project.demoURL} target="_blank" rel="noopener noreferrer" className="carousel-btn-link carousel-btn-demo" tabIndex={isActive ? 0 : -1}>
 													<iconify-icon icon="mdi:open-in-new" width="18" height="18" />
 													{t('buttons.viewDemo')}
 												</a>

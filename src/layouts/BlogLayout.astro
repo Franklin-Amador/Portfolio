@@ -1,6 +1,7 @@
 ---
 
 import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/header/Header.astro";
 import { menuBlog } from "../components/data/menuData";
@@ -8,17 +9,56 @@ import Layout from "../layouts/Layout.astro";
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 type Props = CollectionEntry<"blog">["data"];
 ---
-<Layout title={title} description={description} image={heroImage}>
+<Layout title={title} description={description} image={heroImage?.src}>
 	<Header origin={menuBlog} name="Franklin Amador" />
 	<main class="w-full flex flex-col justify-center items-center pt-[13rem]">
 		<div class="text-center">
 			<h1 class="text-4xl text-center font-extrabold color__gradiente mb-3">
 				{title}
 			</h1>
-			<FormattedDate date={pubDate} clase="text-white text-2xl" />
+			<FormattedDate date={pubDate} clase="text-[--primary-80] text-2xl" />
 		</div>
-		<section class="flex flex-col md:max-w-[57%] max-w-[100%] min-w-[30rem] px-5 pt-10 pb-[3rem] justify-center w-[80%">
+		{heroImage && (
+			<Image
+				class="post-hero"
+				src={heroImage}
+				alt={title}
+				widths={[480, 800, 1100]}
+				sizes="(max-width: 768px) 100vw, 80rem"
+				format="webp"
+				loading="eager"
+			/>
+		)}
+		<section class="flex flex-col md:max-w-[57%] max-w-[100%] min-w-[30rem] px-5 pt-10 pb-[3rem] justify-center w-[80%]">
 			<slot />
+			<a class="post-back" href="/#hobbies">← Volver</a>
 		</section>
 	</main>
 </Layout>
+
+<style>
+	.post-hero {
+		width: min(80rem, 90%);
+		max-height: 32rem;
+		height: auto;
+		object-fit: cover;
+		border-radius: 20px;
+		margin-top: 3rem;
+		border: 1px solid color-mix(in srgb, var(--primary-60) 40%, transparent);
+		box-shadow: 0 24px 60px color-mix(in srgb, var(--primary-100) 18%, transparent);
+	}
+
+	.post-back {
+		margin-top: 4rem;
+		align-self: flex-start;
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--primary-80);
+		transition: color var(--dur-fast) ease, transform var(--dur-fast) ease;
+	}
+
+	.post-back:hover {
+		color: var(--primary-100);
+		transform: translateX(-4px);
+	}
+</style>

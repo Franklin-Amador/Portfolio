@@ -1,17 +1,28 @@
 ---
+import { getImage } from 'astro:assets';
 import Title from './atoms/Title.astro';
 import { getPortafolioData} from "../components/data/portfolioData.js"
 import Card from './card-portfolio/CardPortfolio.astro';
 import ProjectCarousel from './ProjectCarousel/ProjectCarousel';
 
-// Separar proyectos destacados (primeros 3 del CV) del resto
-const featuredProjects = getPortafolioData.slice(0, 3);
+// Separar proyectos destacados (primeros 3 del CV) del resto.
+// El carrusel es React, así que las imágenes se resuelven aquí a strings (src/srcset).
+const featuredProjects = await Promise.all(
+	getPortafolioData.slice(0, 3).map(async (project) => {
+		const img = await getImage({
+			src: project.imgSrc,
+			widths: [480, 760, 1100],
+			format: 'webp',
+		});
+		return { ...project, imgSrc: img.src, imgSrcSet: img.srcSet.attribute };
+	})
+);
 const otherProjects = getPortafolioData.slice(3);
 ---
 
 <section
 	id="portafolio"
-	class="flex flex-col w-full  justify-center items-center h-auto min-h-[100dvh] py-12"
+	class="flex flex-col w-full  justify-center items-center h-auto min-h-[100dvh] py-[--section-py]"
 >
 	<div class="portfolio__container">
 		<Title contenido="Proyectos" i18nKey="portfolio.title" />
@@ -24,7 +35,11 @@ const otherProjects = getPortafolioData.slice(3);
 			<div class="other-projects-section">
 				<h3 class="other-projects-title" data-i18n="portfolio.otherProjects">Otros Proyectos</h3>
 				<div class="portfolio__elements">
-					{otherProjects.map((props) => <Card {...props} />)}
+					{otherProjects.map((props, i) => (
+						<div class="portfolio__reveal" data-reveal style={`--reveal-delay: ${i * 80}ms`}>
+							<Card {...props} />
+						</div>
+					))}
 				</div>
 			</div>
 		)}
@@ -70,6 +85,12 @@ const otherProjects = getPortafolioData.slice(3);
 		justify-items: center;
 		gap: 3rem;
 		width: 100%;
+	}
+
+	.portfolio__reveal {
+		width: 100%;
+		display: flex;
+		justify-content: center;
 	}
 
 	@media screen and (max-width: 700px) {

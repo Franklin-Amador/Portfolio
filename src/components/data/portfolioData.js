@@ -1,7 +1,14 @@
+import luminaImg from '../../assets/img/lumina.jpg';
+import economiaImg from '../../assets/img/economia.jpg';
+import rustApiImg from '../../assets/img/rust-api.png';
+import tetrisImg from '../../assets/img/Tetris.png';
+import erpImg from '../../assets/img/ERP.jpeg';
+import fotoImg from '../../assets/img/foto.jpeg';
+
 /**
  * @SofiDev Esto es JSDOC, si consideras que puede ser complicado solo borralo, es un comentario, no afectará en nada
  * @typedef PortafolioData
- * @property {string} imgSrc Url de la imagen
+ * @property {ImageMetadata} imgSrc Imagen importada desde src/assets (optimizada por astro:assets)
  * @property {string} title Titulo de la tarjeta
  * @property {string} [titleEN] Titulo de la tarjeta en inglés (opcional)
  * @property {string[]} skills Array con tus habilidades ej: ['React', 'CSS', 'JavaScript']
@@ -9,7 +16,6 @@
  * @property {string} descriptionEN La descripcion de la tarjeta en inglés
  * @property {string} demoURL Url de una pagina de demostración
  * @property {string} repoURL Url del repositorio, ej: https://github.com/usuario/repo
- * @property {string} anim La animación que se ejecutará cuando se cargue la tarjeta, ej: fade-up, fade-right, fade-left, fade-down
  * @property {number} averageBrightness Cuanto brillo tendrá el color de fondo de la tarjeta, ej: 0.1
  */
 
@@ -19,7 +25,7 @@
  */
 export const portafolioData = [
 	{
-		imgSrc: "/img/lumina.jpg",
+		imgSrc: luminaImg,
 		title: 'Lumina - Plataforma de Cursos',
 		titleEN: 'Lumina - Course Platform',
 		skills: [
@@ -38,11 +44,10 @@ export const portafolioData = [
 			'Online course platform with solid architecture in Azure. Implements Infrastructure as Code with Terraform, Azure Database and Blob Storage for multimedia content.',
 		demoURL: '',
 		repoURL: 'https://github.com/Franklin-Amador/Backend-lumina-api',
-		anim: 'fade-right',
 		averageBrightness: 0.2,
 	},
 	{
-		imgSrc: "/img/economia.jpg",
+		imgSrc: economiaImg,
 		title: 'Clasificador de Economía - Modelo ML',
 		titleEN: 'Economy Classifier - ML Model',
 		skills: ['FastAPI', 'Jupyter', 'Next.js', 'Docker', 'Vercel'],
@@ -52,11 +57,10 @@ export const portafolioData = [
 			'Full-stack macroeconomic analysis system based on official EPHPM data from July 2025. Complete ETL pipeline with ML model optimized in ONNX for economic predictions.',
 		demoURL: 'https://frontend-ephpm-2025.vercel.app/',
 		repoURL: 'https://github.com/Franklin-Amador/BASE-EPHPM-JULIO-2025',
-		anim: 'fade-up',
 		averageBrightness: 0.1,
 	},
 	{
-		imgSrc: "/img/rust-api.png",
+		imgSrc: rustApiImg,
 		title: 'Backend Rust - API Campus Virtual',
 		titleEN: 'Rust Backend - Virtual Campus API',
 		skills: [
@@ -75,11 +79,10 @@ export const portafolioData = [
 			'REST API with professional architecture: multi-stage containerization, Docker Compose orchestration, PostgreSQL migrations. Project used in Compdes Guatemala 2025 research.',
 		demoURL: '',
 		repoURL: 'https://github.com/Franklin-Amador/seminario-backend-rust',
-		anim: 'fade-left',
 		averageBrightness: 0.15,
 	},
 	{
-		imgSrc: "/img/Tetris.png",
+		imgSrc: tetrisImg,
 		title: 'Tetris Game',
 		skills: ['Python'],
 		descriptionES:
@@ -88,11 +91,10 @@ export const portafolioData = [
 			'Classic Tetris game developed in Python using Pygame. Includes scoring system, difficulty levels and visual effects.',
 		demoURL: '',
 		repoURL: 'https://github.com/Franklin-Amador/Python/tree/main/Tetris',
-		anim: 'fade-right',
 		averageBrightness: 0.12,
 	},
 	{
-		imgSrc: "/img/ERP.jpeg",
+		imgSrc: erpImg,
 		title: 'ERP Mercadito',
 		skills: ['C#', 'SQL'],
 		descriptionES:
@@ -101,11 +103,10 @@ export const portafolioData = [
 			'Complete ERP system for inventory management, sales and reporting. Developed with C# Windows Forms and SQL Server.',
 		demoURL: '',
 		repoURL: 'https://github.com/esau-bg/ERP_Mercadito',
-		anim: 'fade-up',
 		averageBrightness: 0.1,
 	},
 	{
-		imgSrc: "/img/foto.jpeg",
+		imgSrc: fotoImg,
 		title: 'Portfolio Personal',
 		skills: ['Astro', 'React', 'Tailwind', 'JavaScript'],
 		descriptionES:
@@ -114,7 +115,6 @@ export const portafolioData = [
 			'Modern personal portfolio with dark/light mode, smooth animations and responsive design. Built with Astro and React.',
 		demoURL: '',
 		repoURL: 'https://github.com/Franklin-Amador/Portfolio',
-		anim: 'fade-left',
 		averageBrightness: 0.12,
 	},
 ];

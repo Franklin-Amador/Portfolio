@@ -68,23 +68,22 @@ const instanceId = `theme-toggle-${Math.random().toString(36).substr(2, 9)}`;
   btn?.addEventListener('click', () => {
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const newTheme = current === 'dark' ? 'light' : 'dark';
-    
-    // Agregar clase de animación al botón
+
+    const applyTheme = () => {
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateUI();
+    };
+
     btn.classList.add('theme-switching');
-    
-    // Agregar clase de animación al body
-    const body = document.body;
-    body.classList.add('theme-transitioning');
-    
-    // Cambiar el tema
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateUI();
-    
-    // Remover las clases de animación después de que termine
-    setTimeout(() => {
-      btn.classList.remove('theme-switching');
-      body.classList.remove('theme-transitioning');
-    }, 450);
+    setTimeout(() => btn.classList.remove('theme-switching'), 500);
+
+    // Crossfade suave de toda la página; fallback al cambio directo
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion && document.startViewTransition) {
+      document.startViewTransition(applyTheme);
+    } else {
+      applyTheme();
+    }
   });
 </script>

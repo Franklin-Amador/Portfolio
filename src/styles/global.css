@@ -45,14 +45,25 @@
 	--text-small: 1.2rem;
 	--text-medium: 1.4rem;
 	--text-large: 1.6rem;
-	--text-x-large: 2rem;
-	--text-xx-large: 3.1rem;
-	--text-xxx-large: 4.4rem;
+	--text-x-large: clamp(1.7rem, 1.5rem + 0.6vw, 2rem);
+	--text-xx-large: clamp(2.2rem, 1.8rem + 1.4vw, 3.1rem);
+	--text-xxx-large: clamp(3.4rem, 2.2rem + 3vw, 5.2rem);
+	--text-section-title: clamp(3.2rem, 2.4rem + 2vw, 5rem);
 	--text-title: 2rem;
 	--text-general: 1.6rem;
 	--text-button: 1.2rem;
 	--font-montserrat: 'Montserrat', sans-serif;
 	--max-width: 108rem;
+
+	/* ritmo de seccion */
+	--section-py: clamp(6rem, 4rem + 5vw, 11rem);
+	--section-px: clamp(1.6rem, 4vw, 2.2rem);
+	--content-gap: clamp(2rem, 1.5rem + 1.5vw, 4rem);
+
+	/* movimiento */
+	--ease-spring: cubic-bezier(0.4, 0, 0.2, 1);
+	--dur-fast: 0.2s;
+	--dur-base: 0.4s;
 	--site-bg: var(--primary-0);
 	--hero-bg: linear-gradient(
 		-54deg,
@@ -141,6 +152,37 @@ html {
 	font-size: 62.5%;
 	scroll-behavior: smooth;
 	overflow-x: clip;
+	scrollbar-color: var(--primary-40) var(--primary-0);
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+}
+::-webkit-scrollbar-track {
+	background: var(--primary-0);
+}
+::-webkit-scrollbar-thumb {
+	background: var(--primary-40);
+	border-radius: 8px;
+	border: 2px solid var(--primary-0);
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--primary-50);
+}
+
+::selection {
+	background: var(--secondary-50);
+	color: #fff;
+}
+[data-theme="light"] ::selection {
+	background: var(--secondary-80);
+	color: #fff;
+}
+
+:focus-visible {
+	outline: 2px solid var(--secondary-60);
+	outline-offset: 3px;
+	border-radius: 4px;
 }
 
 body {
@@ -150,20 +192,11 @@ body {
 	position: relative;
 }
 
-body.theme-transitioning {
-	animation: theme-change 0.6s ease-in-out;
-}
-
-@keyframes theme-change {
-	0% {
-		filter: brightness(1);
-	}
-	50% {
-		filter: brightness(0.95);
-	}
-	100% {
-		filter: brightness(1);
-	}
+/* Crossfade del cambio de tema (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 0.5s;
+	animation-timing-function: ease-in-out;
 }
 
 /* Grid solo en site-shell, no en footer */
@@ -207,6 +240,15 @@ body::after {
 	mix-blend-mode: soft-light;
 	animation: scanline 9s linear infinite;
 	z-index: 1;
+}
+
+/* En claro, el grid y la scanline leen como suciedad sobre blanco: bajar presencia */
+[data-theme='light'] .site-shell::before {
+	opacity: 0.12;
+}
+
+[data-theme='light'] body::after {
+	opacity: 0.08;
 }
 
 .site-shell {
@@ -259,7 +301,11 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	body::after {
+	html {
+		scroll-behavior: auto;
+	}
+	body::after,
+	.site-wave {
 		animation: none;
 	}
 }
@@ -269,6 +315,7 @@ main {
 p{
 	color: var(--primary-100);
 	font-size: var(--text-general);
+	line-height: 1.65;
 }
 
 .color__gradiente {
@@ -288,4 +335,35 @@ p{
 
 .max__width {
 	max-width: 117.8rem;
+}
+
+/* Scroll reveal */
+[data-reveal] {
+	opacity: 0;
+	transform: translateY(24px);
+	transition:
+		opacity 0.7s var(--ease-spring),
+		transform 0.7s var(--ease-spring);
+	transition-delay: var(--reveal-delay, 0s);
+}
+
+[data-reveal='left'] {
+	transform: translateX(-32px);
+}
+
+[data-reveal='right'] {
+	transform: translateX(32px);
+}
+
+[data-reveal].is-revealed {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-reveal] {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
 }

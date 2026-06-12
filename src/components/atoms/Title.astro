@@ -1,12 +1,43 @@
 ---
-const { contenido, margin, i18nKey } = Astro.props;
+const { contenido, margin = '2.4rem', i18nKey, align = 'center' } = Astro.props;
 ---
 
-<h2 class="color__gradiente" style=`margin-bottom:${margin}` data-i18n={i18nKey}>{contenido}</h2>
+<h2 class:list={['section-title', `section-title--${align}`]} style=`margin-bottom:${margin}`>
+	<span class="color__gradiente" data-i18n={i18nKey}>{contenido}</span>
+</h2>
 
 <style>
-	h2 {
-		font-size: 5rem;
-		font-weight: 500;
+	.section-title {
+		font-size: var(--text-section-title);
+		font-weight: 600;
+		position: relative;
+		padding-bottom: 1.4rem;
+	}
+
+	.section-title::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		width: 80px;
+		height: 3px;
+		background: var(--text-gradient);
+		border-radius: 2px;
+	}
+
+	.section-title--center {
+		text-align: center;
+	}
+
+	.section-title--center::after {
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.section-title--left {
+		text-align: left;
+	}
+
+	.section-title--left::after {
+		left: 0;
 	}
 </style>

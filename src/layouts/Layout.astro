@@ -4,12 +4,18 @@ import ThemeToggle from '../components/ThemeToggle/ThemeToggle.astro';
 import LanguageToggle from '../components/LanguageToggle/LanguageToggle.astro';
 import Footer from '../components/Footer/Footer.astro';
 import NeuralCanvas from '../components/NeuralCanvas/NeuralCanvas.astro';
+import { translations } from '../utils/translations';
 interface Props {
 	title: string;
 	description?: string;
 	image?: string;
 }
-const { title, description = "Portfolio de Franklin Amador - Full Stack Developer especializado en Data Engineering, Machine Learning y DevOps. Construyo pipelines de datos, modelos ML y arquitecturas cloud escalables.", image = "/img/foto.jpeg" } = Astro.props;
+const { title, description = "Portfolio de Franklin Amador - Full Stack Developer especializado en Data Engineering, Machine Learning y DevOps. Construyo pipelines de datos, modelos ML y arquitecturas cloud escalables.", image = "/og.png" } = Astro.props;
+
+// Con `site` configurado en astro.config.mjs las URLs sociales salen absolutas
+// (los crawlers ignoran rutas relativas en og:image).
+const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+const socialImage = Astro.site ? new URL(image, Astro.site).href : image;
 ---
 
 <!doctype html>
@@ -24,18 +30,25 @@ const { title, description = "Portfolio de Franklin Amador - Full Stack Develope
 		<!-- SEO Meta Tags -->
 		<meta name="author" content="Franklin Amador" />
 		<meta name="keywords" content="Franklin Amador, Full Stack Developer, Data Engineering, Machine Learning, DevOps, Data Science, MLOps, Python, FastAPI, Docker, Azure, Prometheus, Grafana" />
-		
+		{canonicalURL && <link rel="canonical" href={canonicalURL} />}
+		<meta name="theme-color" content="#190230" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Franklin Amador" />
+		<meta property="og:locale" content="es_ES" />
+		<meta property="og:locale:alternate" content="en_US" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={image} />
-		
+		<meta property="og:image" content={socialImage} />
+		{canonicalURL && <meta property="og:url" content={canonicalURL} />}
+
 		<!-- Twitter -->
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
 		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={image} />
+		<meta name="twitter:image" content={socialImage} />
 		<meta name="twitter:creator" content="@LordFrank37" />
 		
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
@@ -102,112 +115,13 @@ const { title, description = "Portfolio de Franklin Amador - Full Stack Develope
 			</div>
 		</div>
 		<Footer />
+		<script>
+			import '../scripts/reveal.ts';
+		</script>
 	</body>
 
-	<script is:inline>
-		const translations = {
-		  es: {
-		    nav: {
-		      home: "Home",
-		      about: "Acerca de",
-		      projects: "Proyectos",
-		      hobbies: "Hobbies",
-		      contact: "Contacto",
-		    },
-		    hero: {
-		      subtitle1: "Full Stack Developer especializado en Data Engineering, Machine Learning y DevOps.",
-		      subtitle2: "Construyo pipelines de datos robustos, modelos ML en producción y arquitecturas cloud escalables.",
-		      buttonProjects: "Ver Proyectos",
-		      buttonContact: "Contactar",
-		    },
-		    about: {
-		      title: "Sobre mí",
-		      description1: "¡Hola! Soy Franklin, Full Stack Developer con enfoque en Data Engineering, Machine Learning y DevOps. Actualmente estudio Ingeniería en Sistemas, combinando teoría académica con práctica profesional en proyectos reales.",
-		      description2: "Me apasiona construir sistemas que extraen valor de los datos: desde pipelines ETL hasta modelos ML en producción, pasando por infraestructura cloud automatizada. Trabajo con Python, FastAPI, Docker, Kubernetes y herramientas de observabilidad como Prometheus y Grafana. Cuando no estoy programando, disfruto de la música, la naturaleza, el origami, resolver puzzles, los cubos de Rubik y los videojuegos.",
-		    },
-		    skills: {
-		      title: "Habilidades",
-		      description: "Domino múltiples lenguajes incluyendo JavaScript, TypeScript, Python y Go. Especializado en desarrollo web moderno con React, Astro y Node.js, utilizando Tailwind, Sass y Bootstrap para diseño, combinado con bases de datos SQL y NoSQL.",
-		    },
-		    portfolio: {
-		      title: "Proyectos",
-		      otherProjects: "Otros Proyectos",
-		      featured: "Proyectos Destacados",
-		    },
-		    blog: {
-		      title: "Hobbies",
-		      description: "Un vistazo a mis intereses y proyectos personales fuera del trabajo.",
-		      readMore: "Leer mas",
-		    },
-		    contact: {
-		      title: "Contacto",
-		      description: "¿Tienes un proyecto en mente? ¿Quieres colaborar? ¡Hablemos! Estoy disponible para nuevas oportunidades y proyectos interesantes.",
-		      emailLabel: "Email",
-		      emailText: "Envíame un correo",
-		      githubLabel: "GitHub",
-		      linkedinLabel: "LinkedIn",
-		      linkedinText: "Conéctate conmigo",
-		      followLabel: "Sígueme en redes sociales",
-		      availability: "💼 Disponible para trabajos freelance y oportunidades laborales",
-		    },
-		    buttons: {
-		      viewMore: "Ver más",
-		      github: "GitHub",
-		      demo: "Demo",
-		    },
-		  },
-		  en: {
-		    nav: {
-		      home: "Home",
-		      about: "About",
-		      projects: "Projects",
-		      hobbies: "Hobbies",
-		      contact: "Contact",
-		    },
-		    hero: {
-		      subtitle1: "Full Stack Developer specialized in Data Engineering, Machine Learning and DevOps.",
-		      subtitle2: "I build robust data pipelines, production ML models and scalable cloud architectures.",
-		      buttonProjects: "View Projects",
-		      buttonContact: "Get in Touch",
-		    },
-		    about: {
-		      title: "About Me",
-		      description1: "Hello! I'm Franklin, a Full Stack Developer focused on Data Engineering, Machine Learning and DevOps. I'm currently studying Systems Engineering, combining academic theory with professional practice on real projects.",
-		      description2: "I'm passionate about building systems that extract value from data: from ETL pipelines to production ML models, through automated cloud infrastructure. I work with Python, FastAPI, Docker, Kubernetes and observability tools like Prometheus and Grafana. When I'm not coding, I enjoy music, nature, origami, solving puzzles, Rubik's cubes and video games.",
-		    },
-		    skills: {
-		      title: "Skills",
-		      description: "I master multiple languages including JavaScript, TypeScript, Python and Go. Specialized in modern web development with React, Astro and Node.js, using Tailwind, Sass and Bootstrap for design, combined with SQL and NoSQL databases.",
-		    },
-		    portfolio: {
-		      title: "Projects",
-		      otherProjects: "Other Projects",
-		      featured: "Featured Projects",
-		    },
-		    blog: {
-		      title: "Hobbies",
-		      description: "A glimpse into my interests and personal projects outside of work.",
-		      readMore: "Read more",
-		    },
-		    contact: {
-		      title: "Contact",
-		      description: "Do you have a project in mind? Want to collaborate? Let's talk! I'm available for new opportunities and interesting projects.",
-		      emailLabel: "Email",
-		      emailText: "Send me an email",
-		      githubLabel: "GitHub",
-		      linkedinLabel: "LinkedIn",
-		      linkedinText: "Connect with me",
-		      followLabel: "Follow me on social media",
-		      availability: "💼 Available for freelance work and job opportunities",
-		    },
-		    buttons: {
-		      viewMore: "View More",
-		      github: "GitHub",
-		      demo: "Demo",
-		    },
-		  },
-		};
-
+	{/* Única fuente de verdad: src/utils/translations.ts (define:vars la inyecta al cliente) */}
+	<script is:inline define:vars={{ translations }}>
 		function getTranslation(key, lang = "es") {
 		  const keys = key.split(".");
 		  let value = translations[lang];

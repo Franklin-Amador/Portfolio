@@ -8,9 +8,10 @@
 
 .about__container {
 	display: flex;
-	padding: 11rem 13.1rem;
+	max-width: var(--max-width);
+	padding: var(--section-py) var(--section-px);
 	justify-content: space-around;
-	gap: 4.4rem;
+	gap: var(--content-gap);
 }
 
 .about__img {
@@ -47,7 +48,6 @@
 /* Tablet */
 @media screen and (max-width: 1024px) {
 	.about__container {
-		padding: 8rem 4rem;
 		gap: 3rem;
 	}
 
@@ -62,7 +62,6 @@
 /* Mobile */
 @media screen and (max-width: 768px) {
 	.about__container {
-		padding: 6rem 2rem;
 		flex-direction: column-reverse;
 		align-items: center;
 		gap: 2rem;

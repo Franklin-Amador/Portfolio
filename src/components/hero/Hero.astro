@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import './hero.css';
 import Boton from '../atoms/Boton.astro';
+import foto from '../../assets/img/foto.jpeg';
 ---
 
 <section class="hero">
@@ -14,15 +16,19 @@ import Boton from '../atoms/Boton.astro';
 				Construyo pipelines de datos robustos, modelos ML en producción y arquitecturas cloud escalables.
 			</p>
 			<div class="hero__buttons">
-				<Boton href="#portafolio" texto="Ver Proyectos" bottonI18n="hero.buttonProjects" />
-				<Boton href="#contact" texto="Contactar" bottonI18n="hero.buttonContact" />
+				<Boton href="#portafolio" texto="Ver Proyectos" bottonI18n="hero.buttonProjects" variant="primary" />
+				<Boton href="#contact" texto="Contactar" bottonI18n="hero.buttonContact" variant="ghost" />
 			</div>
 		</div>
-		<img 
-			class="hero__img" 
-			src="/img/foto.jpeg" 
+		<Image
+			class="hero__img"
+			src={foto}
 			alt="Franklin Amador - Full Stack & Data Engineer"
+			width={380}
+			densities={[1, 2]}
+			format="webp"
 			loading="eager"
+			fetchpriority="high"
 		/>
 	</div>
 </section>

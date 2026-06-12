@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import './card-portfolio.css';
 const {
 	title,
@@ -14,9 +15,12 @@ const {
 ---
 
 <div class="card__portfolio">
-	<img
+	<Image
 		src={imgSrc}
 		alt={title}
+		widths={[380, 760]}
+		sizes="(max-width: 480px) 100vw, 380px"
+		format="webp"
 		crossorigin="anonymous"
 		loading="lazy"
 		average-brightness={averageBrightness}

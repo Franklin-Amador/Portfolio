@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import SocialIcons from '../SocialIcons.astro';
 import Title from '../atoms/Title.astro';
+import foto from '../../assets/img/foto.jpeg';
 import "./about.css"
 
 
@@ -8,15 +10,19 @@ import "./about.css"
 
 <section id="about" class="about">
 	<div class="about__container">
-		<img
+		<Image
 			class="about__img"
-			src=/img/foto.jpeg
-			alt="Foto de perfil de Franklin Amador "
+			src={foto}
+			alt="Foto de perfil de Franklin Amador"
+			width={600}
+			format="webp"
+			loading="lazy"
+			data-reveal="left"
 		/>
-		
 
-		<div class="about__content">
-			<Title margin="1rem" contenido="Sobre mí" i18nKey="about.title" />
+
+		<div class="about__content" data-reveal="right">
+			<Title margin="1rem" contenido="Sobre mí" i18nKey="about.title" align="left" />
 			<p class="about__text" data-i18n="about.description1">
 				¡Hola! Soy Franklin, Full Stack Developer con enfoque en Data Engineering, Machine Learning y DevOps. Actualmente estudio Ingeniería en Sistemas, combinando teoría académica con práctica profesional en proyectos reales.
 			</p>

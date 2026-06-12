@@ -17,16 +17,19 @@ const posts = (await getCollection('blog')).sort(
   </div>
   <div class="hobbies__grid">
     {
-      posts.slice(0, 5).map((post) => (
-        <CardBlog
-          title={post.data.title}
-          titleEN={post.data.titleEN}
-          content={post.data.description}
-          contentES={post.data.description}
-          contentEN={post.data.descriptionEN}
-          img={post.data.heroImage}
-        >
-        </CardBlog>
+      posts.slice(0, 5).map((post, i) => (
+        <div class="hobbies__reveal" data-reveal style={`--reveal-delay: ${i * 80}ms`}>
+          <CardBlog
+            title={post.data.title}
+            titleEN={post.data.titleEN}
+            content={post.data.description}
+            contentES={post.data.description}
+            contentEN={post.data.descriptionEN}
+            img={post.data.heroImage}
+            href={`/blog/${post.slug}/`}
+          >
+          </CardBlog>
+        </div>
       ))
     }
   </div>
@@ -36,7 +39,7 @@ const posts = (await getCollection('blog')).sort(
   .hobbies {
     width: 100%;
     max-width: var(--max-width);
-    margin: 4rem auto 6rem;
+    margin: var(--section-py) auto;
       padding: 3rem 2.5rem;
     display: flex;
     flex-direction: column;
@@ -69,6 +72,12 @@ const posts = (await getCollection('blog')).sort(
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2.6rem;
     justify-items: center;
+  }
+
+  .hobbies__reveal {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .hobbies__cta {

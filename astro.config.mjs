@@ -5,7 +5,8 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  // Actualiza esto con tu dominio de Cloudflare cuando lo tengas
+  // IMPORTANTE: sin `site` el sitemap no se genera y las og:image salen
+  // relativas (los crawlers las ignoran). Pon aquí tu dominio de producción.
   // site: 'https://tu-dominio.pages.dev',
   devToolbar: {
     enabled: false

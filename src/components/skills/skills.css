@@ -1,9 +1,15 @@
 #skills {
 	display: flex;
 	max-width: calc(var(--max-width) + 2.2rem);
-	padding: 1.1rem;
-	gap: 2.2rem;
-	margin: 4rem auto;
+	padding: 1.1rem var(--section-px);
+	gap: var(--content-gap);
+	margin: var(--section-py) auto;
+}
+
+#skills .terminal-wrap {
+	flex: 1;
+	display: flex;
+	min-width: 0;
 }
 
 #skills .text-content {

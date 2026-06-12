@@ -4,7 +4,7 @@ titleEN: "Music and Sound"
 description: "Exploro musica, playlists y sonido como parte de mi rutina creativa."
 descriptionEN: "I explore music, playlists and sound as part of my creative routine."
 pubDate: 'Jan 10 25'
-heroImage: "/img/music.png"
+heroImage: "../../assets/img/music.png"
 ---
 
 ## Musica y Sonido

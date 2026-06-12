@@ -4,7 +4,7 @@ titleEN: "Nature and Hikes"
 description: "Salir a caminar y conectar con la naturaleza para recargar energia."
 descriptionEN: "Go for walks and connect with nature to recharge my energy."
 pubDate: 'Feb 05 25'
-heroImage: "/img/bosques.webp"
+heroImage: "../../assets/img/bosques.webp"
 ---
 
 ## Naturaleza y Caminatas

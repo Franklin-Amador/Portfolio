@@ -18,10 +18,11 @@
 .hero::after {
 	content: '';
 	position: absolute;
-	height: 6rem;
+	height: 12rem;
 	width: 100%;
 	background: linear-gradient(0deg, var(--primary-0), #0000);
 	bottom: 0;
+	pointer-events: none;
 }
 
 .hero .hero__img {
@@ -29,6 +30,12 @@
 	max-width: 38rem;
 	border-radius: 100%;
 	height: auto;
+	box-shadow:
+		0 0 0 4px color-mix(in srgb, var(--primary-60) 35%, transparent),
+		0 24px 60px color-mix(in srgb, var(--primary-60) 25%, transparent);
+	animation:
+		hero-img-in 0.9s var(--ease-spring) backwards,
+		hero-float 7s ease-in-out 1s infinite;
 }
 
 .hero .hero__container {
@@ -36,7 +43,7 @@
 	grid-template-columns: 1fr auto;
 	width: 100%;
 	max-width: var(--max-width);
-	gap: 8rem;
+	gap: clamp(3rem, 5vw, 8rem);
 }
 
 .hero .hero__text {
@@ -110,6 +117,70 @@
 		background-position: 70%;
 	}
 	100% {
+		background-size: 100%;
+	}
+}
+
+/* Entrada escalonada del hero */
+.hero__title {
+	animation: hero-fade-up 0.7s var(--ease-spring) backwards;
+}
+
+.hero__text {
+	animation: hero-fade-up 0.7s var(--ease-spring) 0.12s backwards;
+}
+
+.hero__subtitle {
+	animation: hero-fade-up 0.7s var(--ease-spring) 0.24s backwards;
+}
+
+.hero__buttons {
+	animation: hero-fade-up 0.7s var(--ease-spring) 0.36s backwards;
+}
+
+@keyframes hero-fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(24px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes hero-img-in {
+	from {
+		opacity: 0;
+		transform: scale(0.92);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes hero-float {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-8px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero,
+	.hero__title,
+	.hero__text,
+	.hero__subtitle,
+	.hero__buttons,
+	.hero .hero__img {
+		animation: none;
+	}
+
+	.hero {
 		background-size: 100%;
 	}
 }

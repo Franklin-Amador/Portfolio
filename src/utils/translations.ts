@@ -26,10 +26,12 @@ export const translations = {
         portfolio: {
             title: "Proyectos",
             featured: "Proyectos Destacados",
+            otherProjects: "Otros Proyectos",
         },
         blog: {
             title: "Hobbies",
-            description: "Mi blog con artículos sobre tecnología y otros intereses",
+            description: "Un vistazo a mis intereses y proyectos personales fuera del trabajo.",
+            readMore: "Leer mas",
         },
         contact: {
             title: "Contacto",
@@ -79,10 +81,12 @@ export const translations = {
         portfolio: {
             title: "Projects",
             featured: "Featured Projects",
+            otherProjects: "Other Projects",
         },
         blog: {
             title: "Hobbies",
-            description: "My blog with articles about technology and other interests",
+            description: "A glimpse into my interests and personal projects outside of work.",
+            readMore: "Read more",
         },
         contact: {
             title: "Contact",
